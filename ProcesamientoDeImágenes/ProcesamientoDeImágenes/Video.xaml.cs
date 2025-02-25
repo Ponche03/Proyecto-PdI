@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,6 +35,7 @@ namespace ProcesamientoDeImágenes
 
             Camera newWindow = new Camera();
             newWindow.Show();
+            newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             this.Close();
         }
@@ -44,6 +46,7 @@ namespace ProcesamientoDeImágenes
 
             MainWindow newWindow = new MainWindow();
             newWindow.Show();
+            newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             this.Close();
 
@@ -53,6 +56,32 @@ namespace ProcesamientoDeImágenes
         {
             this.Close();
         }
+
+        private void SoftwareInfoClick(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Software version: 1.000", "Picture Maker Version:", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        private void UserManualClick(object sender, RoutedEventArgs e)
+        {
+            string url = "https://drive.google.com/file/d/1SZQoL3c3r61YYPyqq00cw3CIdI_oyrap/view?usp=drive_link";
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
+
+
+        private void OnUploadVideoIconClick(object sender, RoutedEventArgs e)
+        {
+            // Handle video upload functionality here
+        }
+
+        private void OnDownloadVideoIconClick(object sender, RoutedEventArgs e)
+        {
+            // Handle video download functionality here
+        }
+
 
     }
 }

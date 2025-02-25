@@ -114,14 +114,14 @@
 
                 <!-- Bottom section with buttons -->
                 <StackPanel VerticalAlignment="Bottom" Margin="10,10,10,10" Grid.Row="3">
-                    <Button Style="{StaticResource SidebarButtonStyle}">
+                    <Button Style="{StaticResource SidebarButtonStyle}" Click="SoftwareInfoClick">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock FontSize="20" Foreground="White">ℹ️</TextBlock>
                             <TextBlock Text=" Software Info" FontSize="16" Foreground="White" Margin="10,0,0,0"/>
                         </StackPanel>
                     </Button>
 
-                    <Button Style="{StaticResource SidebarButtonStyle}">
+                    <Button Style="{StaticResource SidebarButtonStyle}" Click="UserManualClick">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock FontSize="20" Foreground="White">📖</TextBlock>
                             <TextBlock Text=" User Manual" FontSize="16" Foreground="White" Margin="10,0,0,0"/>
@@ -212,30 +212,50 @@
 
 
             <!-- Zoom Icon -->
-            <Image Source="/Assets/Icons/ZoomIcon.png" Grid.ColumnSpan="1" Grid.RowSpan="1" Grid.Row="3" Grid.Column="1" Stretch="Fill"/>
+            <Button Click="OnZoomIconClick" Grid.Column="1" Grid.Row="3" Background="Transparent" BorderThickness="0">
+                <Image Source="/Assets/Icons/ZoomIcon.png" Stretch="Fill"/>
+            </Button>
 
             <!-- Flip Image Icon -->
-            <Image Source="/Assets/Icons/FlipIcon.png" Grid.ColumnSpan="1" Grid.RowSpan="1" Grid.Row="5" Grid.Column="1" Stretch="Fill"/>
-
-            <!-- Selected Image Container -->
-            <Rectangle Grid.Column="3" Grid.ColumnSpan="11" Grid.RowSpan="18" Grid.Row="3" Fill="Red"/>
+            <Button Click="OnFlipIconClick" Grid.Column="1" Grid.Row="5" Background="Transparent" BorderThickness="0">
+                <Image Source="/Assets/Icons/FlipIcon.png" Stretch="Fill"/>
+            </Button>
 
             <!-- Upload Image Icon -->
-            <Image Source="/Assets/Icons/UploadImageIcon.png" Grid.ColumnSpan="1" Grid.RowSpan="1" Grid.Row="22" Grid.Column="4" Stretch="Fill"/>
+            <Button Click="OnUploadImageIconClick" Grid.Column="4" Grid.Row="22" Background="Transparent" BorderThickness="0">
+                <Image Source="/Assets/Icons/UploadImageIcon.png" Stretch="Fill"/>
+            </Button>
 
             <!-- Download Image Icon -->
-            <Image Source="/Assets/Icons/DownloadImageIcon.png" Grid.ColumnSpan="1" Grid.RowSpan="1" Grid.Row="22" Grid.Column="12" Stretch="Fill"/>
+            <Button Click="OnDownloadImageIconClick" Grid.Column="12" Grid.Row="22" Background="Transparent" BorderThickness="0">
+                <Image Source="/Assets/Icons/DownloadImageIcon.png" Stretch="Fill"/>
+            </Button>
 
             <ComboBox x:Name="comboBox" Grid.Column="8"  Grid.Row="22" Grid.RowSpan="2" HorizontalAlignment="Center" Margin="0,0,0,30"/>
 
+            <!-- Selected Image Container -->
+            <Border Grid.Column="3" Grid.ColumnSpan="11" Grid.RowSpan="18" Grid.Row="3" BorderBrush="Black" BorderThickness="2">
+                <Image Stretch="Fill"/>
+            </Border>
+
             <!-- Histogram Red -->
-            <Rectangle Grid.Column="18" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="5" Fill="Beige"/>
+            <Border Grid.Column="18" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="5" 
+        BorderBrush="Beige" BorderThickness="2">
+                <Canvas Background="Transparent"/>
+            </Border>
 
             <!-- Histogram Green -->
-            <Rectangle Grid.Column="29" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="5" Fill="Beige"/>
+            <Border Grid.Column="29" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="5" 
+        BorderBrush="Beige" BorderThickness="2">
+                <Canvas Background="Transparent"/>
+            </Border>
 
             <!-- Histogram Blue -->
-            <Rectangle Grid.Column="23" Grid.ColumnSpan="7" Grid.RowSpan="8" Grid.Row="13" Fill="Beige" Margin="18,30,12,30"/>
+            <Border Grid.Column="23" Grid.ColumnSpan="7" Grid.RowSpan="8" Grid.Row="13" 
+        BorderBrush="Beige" BorderThickness="2" Margin="18,30,12,30">
+                <Canvas Background="Transparent"/>
+            </Border>
+
 
         </Grid>
 
