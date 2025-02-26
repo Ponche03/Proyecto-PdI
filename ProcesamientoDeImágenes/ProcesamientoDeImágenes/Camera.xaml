@@ -213,28 +213,46 @@
 
 
             <!-- Flip Image Icon -->
-            <Button Click="OnFlipImageIconClick" Grid.Column="4" Grid.Row="5" Background="Transparent" BorderThickness="0">
+            <Button Click="OnFlipImageIconClick" Grid.Column="2" Grid.Row="5" Background="Transparent" BorderThickness="0">
                 <Image Source="/Assets/Icons/FlipIcon.png" Stretch="Fill"/>
             </Button>
 
             <!-- Screen Shot Icon -->
-            <Button Click="OnScreenShotIconClick" Grid.Column="34" Grid.Row="5" Background="Transparent" BorderThickness="0">
+            <Button Click="OnScreenShotIconClick" Grid.Column="25" Grid.Row="5" Background="Transparent" BorderThickness="0">
                 <Image Source="/Assets/Icons/CameraIcon.png" Stretch="Fill"/>
             </Button>
 
             <!-- Face Detect Icon -->
-            <Button Click="OnFaceDetectIconClick" Grid.Column="34" Grid.Row="7" Background="Transparent" BorderThickness="0">
+            <Button Click="OnFaceDetectIconClick" Grid.Column="25" Grid.Row="7" Background="Transparent" BorderThickness="0">
                 <Image Source="/Assets/Icons/FaceDetectIcon.png" Stretch="Fill"/>
             </Button>
 
 
-            <Border Grid.Column="6" Grid.ColumnSpan="27" Grid.RowSpan="17" Grid.Row="4" BorderBrush="Black" BorderThickness="2">
+            <Border Grid.Column="4" Grid.ColumnSpan="20" Grid.RowSpan="14" Grid.Row="5" BorderBrush="Black" BorderThickness="2">
                 <Image Stretch="Fill"/>
             </Border>
 
-            <ComboBox x:Name="comboBox" Grid.Column="19"  Grid.Row="22" Grid.RowSpan="2" HorizontalAlignment="Center" Margin="0,0,0,30"/>
+            <ComboBox x:Name="comboBox" Grid.Column="13"  Grid.Row="22" Grid.RowSpan="2" HorizontalAlignment="Center" Margin="0,0,0,30"/>
 
-            <ComboBox Grid.Column="19"  Grid.Row="2" Grid.RowSpan="2" HorizontalAlignment="Center" Margin="0,0,0,30"/>
+            <ComboBox Grid.Column="13"  Grid.Row="2" Grid.RowSpan="2" HorizontalAlignment="Center" Margin="0,0,0,30"/>
+
+            <!-- Histogram Red -->
+            <Border Grid.Column="31" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="2" 
+BorderBrush="Beige" BorderThickness="2">
+                <Canvas Background="Transparent"/>
+            </Border>
+
+            <!-- Histogram Green -->
+            <Border Grid.Column="31" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="9" 
+BorderBrush="Beige" BorderThickness="2">
+                <Canvas Background="Transparent"/>
+            </Border>
+
+            <!-- Histogram Blue -->
+            <Border Grid.Column="31" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="16" 
+BorderBrush="Beige" BorderThickness="2">
+                <Canvas Background="Transparent"/>
+            </Border>
 
         </Grid>
 
