@@ -232,7 +232,19 @@
                 <Image Stretch="Fill"/>
             </Border>
 
-            <ComboBox x:Name="comboBox" Grid.Column="13"  Grid.Row="22" Grid.RowSpan="2" HorizontalAlignment="Center" Margin="0,0,0,30"/>
+            <ComboBox x:Name="comboBoxFilterSelection" Grid.Column="13"  Grid.Row="22" Grid.RowSpan="2" HorizontalAlignment="Center" Margin="0,0,0,30" SelectedIndex="0" FontFamily="Arial Narrow">
+                <ComboBoxItem>None</ComboBoxItem>
+                <ComboBoxItem>Gaussian Blur</ComboBoxItem>
+                <ComboBoxItem>Contrast Filter</ComboBoxItem>
+                <ComboBoxItem>Sharpness Filter</ComboBoxItem>
+                <ComboBoxItem>Threshold Filter</ComboBoxItem>
+                <ComboBoxItem>Hue/Saturation Filter</ComboBoxItem>
+                <ComboBoxItem>Negative Filter</ComboBoxItem>
+                <ComboBoxItem>Vignette Filter</ComboBoxItem>
+                <ComboBoxItem>Mosaic Filter</ComboBoxItem>
+                <ComboBoxItem>Retro Effect</ComboBoxItem>
+                <ComboBoxItem>Warp Filter</ComboBoxItem>
+            </ComboBox>
 
             <ComboBox Grid.Column="13"  Grid.Row="2" Grid.RowSpan="2" HorizontalAlignment="Center" Margin="0,0,0,30"/>
 

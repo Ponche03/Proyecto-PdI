@@ -231,12 +231,29 @@
                 <Image Source="/Assets/Icons/DownloadImageIcon.png" Stretch="Fill"/>
             </Button>
 
-            <ComboBox x:Name="comboBox" Grid.Column="8"  Grid.Row="22" Grid.RowSpan="2" HorizontalAlignment="Center" Margin="0,0,0,30"/>
+            
+            <ComboBox x:Name="comboBoxFilterSelector" Grid.Column="8" Grid.Row="22" Grid.RowSpan="2" 
+          HorizontalAlignment="Center" Margin="0,0,0,30" SelectedIndex="0" FontFamily="Arial Narrow">
+                <ComboBoxItem>None</ComboBoxItem>
+                <ComboBoxItem>Gaussian Blur</ComboBoxItem>
+                <ComboBoxItem>Contrast Filter</ComboBoxItem>
+                <ComboBoxItem>Sharpness Filter</ComboBoxItem>
+                <ComboBoxItem>Threshold Filter</ComboBoxItem>
+                <ComboBoxItem>Hue/Saturation Filter</ComboBoxItem>
+                <ComboBoxItem>Negative Filter</ComboBoxItem>
+                <ComboBoxItem>Vignette Filter</ComboBoxItem>
+                <ComboBoxItem>Mosaic Filter</ComboBoxItem>
+                <ComboBoxItem>Retro Effect</ComboBoxItem>
+                <ComboBoxItem>Warp Filter</ComboBoxItem>
+            </ComboBox>
 
-            <!-- Selected Image Container -->
+
             <Border Grid.Column="3" Grid.ColumnSpan="11" Grid.RowSpan="18" Grid.Row="3" BorderBrush="Black" BorderThickness="2">
-                <Image Stretch="Fill"/>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <Image x:Name="UploadedImage" Stretch="None"/>
+                </ScrollViewer>
             </Border>
+
 
             <!-- Histogram Red -->
             <Border Grid.Column="18" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="5" 

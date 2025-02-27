@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 
 namespace ProcesamientoDeImágenes
 {
@@ -79,7 +81,18 @@ namespace ProcesamientoDeImágenes
 
         private void OnUploadImageIconClick(object sender, RoutedEventArgs e)
         {
-            // Handle image upload functionality here
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
+                Title = "Select an Image"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+          
+                BitmapImage bitmap = new BitmapImage(new Uri(openFileDialog.FileName));
+                UploadedImage.Source = bitmap;  
+            }
         }
 
         private void OnDownloadImageIconClick(object sender, RoutedEventArgs e)
