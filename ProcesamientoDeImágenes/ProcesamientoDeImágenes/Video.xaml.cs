@@ -34,8 +34,9 @@ namespace ProcesamientoDeImágenes
         {
 
             Camera newWindow = new Camera();
-            newWindow.Show();
             newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            newWindow.Show();
+            
 
             this.Close();
         }
@@ -45,8 +46,9 @@ namespace ProcesamientoDeImágenes
 
 
             MainWindow newWindow = new MainWindow();
-            newWindow.Show();
             newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            newWindow.Show();
+            
 
             this.Close();
 

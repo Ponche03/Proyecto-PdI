@@ -28,8 +28,9 @@ namespace ProcesamientoDeImágenes
         private void GoToVideoPage(object sender, RoutedEventArgs e)
         {
             Video newWindow = new Video();
-            newWindow.Show();
             newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            newWindow.Show();
+           
 
             this.Close();
         }
@@ -43,8 +44,9 @@ namespace ProcesamientoDeImágenes
         {
 
             MainWindow newWindow = new MainWindow();
-            newWindow.Show();
             newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            newWindow.Show();
+           
 
             this.Close();
 

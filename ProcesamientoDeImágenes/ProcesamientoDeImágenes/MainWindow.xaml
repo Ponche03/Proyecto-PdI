@@ -211,15 +211,8 @@
             </Grid.ColumnDefinitions>
 
 
-            <!-- Zoom Icon -->
-            <Button Click="OnZoomIconClick" Grid.Column="1" Grid.Row="3" Background="Transparent" BorderThickness="0">
-                <Image Source="/Assets/Icons/ZoomIcon.png" Stretch="Fill"/>
-            </Button>
 
-            <!-- Flip Image Icon -->
-            <Button Click="OnFlipIconClick" Grid.Column="1" Grid.Row="5" Background="Transparent" BorderThickness="0">
-                <Image Source="/Assets/Icons/FlipIcon.png" Stretch="Fill"/>
-            </Button>
+
 
             <!-- Upload Image Icon -->
             <Button Click="OnUploadImageIconClick" Grid.Column="4" Grid.Row="22" Background="Transparent" BorderThickness="0">
@@ -231,9 +224,9 @@
                 <Image Source="/Assets/Icons/DownloadImageIcon.png" Stretch="Fill"/>
             </Button>
 
-            
-            <ComboBox x:Name="comboBoxFilterSelector" Grid.Column="8" Grid.Row="22" Grid.RowSpan="2" 
-          HorizontalAlignment="Center" Margin="0,0,0,30" SelectedIndex="0" FontFamily="Arial Narrow">
+
+            <ComboBox x:Name="comboBoxFilterSelector" Grid.Column="8" Grid.Row="22" 
+          HorizontalAlignment="Center" Margin="0,10,0,30" SelectedIndex="0" FontFamily="Arial Narrow" SelectionChanged="OnFilterChanged" BorderBrush="{x:Null}" Grid.RowSpan="2" Background="{x:Null}" Foreground="#FF353535">
                 <ComboBoxItem>None</ComboBoxItem>
                 <ComboBoxItem>Gaussian Blur</ComboBoxItem>
                 <ComboBoxItem>Contrast Filter</ComboBoxItem>
@@ -248,9 +241,20 @@
             </ComboBox>
 
 
-            <Border Grid.Column="3" Grid.ColumnSpan="11" Grid.RowSpan="18" Grid.Row="3" BorderBrush="Black" BorderThickness="2">
-                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <Image x:Name="UploadedImage" Stretch="None"/>
+            <Border Grid.Column="3" Grid.ColumnSpan="11" Grid.RowSpan="18" Grid.Row="3" BorderBrush="#FF0F0F26" BorderThickness="2">
+                <ScrollViewer x:Name="ImageScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <Image x:Name="UploadedImage" Stretch="None" 
+               MouseLeftButtonDown="OnImageMouseDown" 
+               MouseMove="OnImageMouseMove" 
+               MouseLeftButtonUp="OnImageMouseUp"
+               PreviewMouseWheel="OnImageMouseWheel">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <TranslateTransform x:Name="ImageTranslateTransform" />
+                                <ScaleTransform x:Name="ImageScaleTransform" ScaleX="1" ScaleY="1" />
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                    </Image>
                 </ScrollViewer>
             </Border>
 
@@ -258,19 +262,19 @@
             <!-- Histogram Red -->
             <Border Grid.Column="18" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="5" 
         BorderBrush="Beige" BorderThickness="2">
-                <Canvas Background="Transparent"/>
+                <Canvas Background="Transparent" x:Name="RedHistogram"/>
             </Border>
 
             <!-- Histogram Green -->
             <Border Grid.Column="29" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="5" 
         BorderBrush="Beige" BorderThickness="2">
-                <Canvas Background="Transparent"/>
+                <Canvas Background="Transparent" x:Name="GreenHistogram"/>
             </Border>
 
             <!-- Histogram Blue -->
             <Border Grid.Column="23" Grid.ColumnSpan="7" Grid.RowSpan="8" Grid.Row="13" 
         BorderBrush="Beige" BorderThickness="2" Margin="18,30,12,30">
-                <Canvas Background="Transparent"/>
+                <Canvas Background="Transparent" x:Name="BlueHistogram"/>
             </Border>
 
 
