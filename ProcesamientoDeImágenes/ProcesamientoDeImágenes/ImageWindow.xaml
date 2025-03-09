@@ -1,0 +1,10 @@
+﻿<Window x:Class="ProcesamientoDeImágenes.ImageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Full Sized Image"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize">
+    <Grid>
+        <Image x:Name="FullSizeImage" Stretch="None"/>
+    </Grid>
+</Window>

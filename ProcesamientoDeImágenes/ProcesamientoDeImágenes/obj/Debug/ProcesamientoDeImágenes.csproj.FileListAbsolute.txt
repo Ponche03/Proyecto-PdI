@@ -36,3 +36,5 @@ C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\Procesam
 C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\ProcesamientoDeImágenes.csproj.CoreCompileInputs.cache
 C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\ProcesamientoDeImágenes.exe
 C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\ProcesamientoDeImágenes.pdb
+C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\ImageWindow.baml
+C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\ImageWindow.g.cs

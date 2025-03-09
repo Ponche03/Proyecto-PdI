@@ -247,7 +247,8 @@
                MouseLeftButtonDown="OnImageMouseDown" 
                MouseMove="OnImageMouseMove" 
                MouseLeftButtonUp="OnImageMouseUp"
-               PreviewMouseWheel="OnImageMouseWheel">
+               PreviewMouseWheel="OnImageMouseWheel"
+               MouseDown="OnImageMouseDownDoubleClick">
                         <Image.RenderTransform>
                             <TransformGroup>
                                 <TranslateTransform x:Name="ImageTranslateTransform" />
