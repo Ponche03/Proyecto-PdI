@@ -144,5 +144,10 @@
   <ItemGroup>
     <Resource Include="Logo.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\pause_icon.png" />
+    <Resource Include="Assets\Icons\play_icon.png" />
+    <Resource Include="Assets\Icons\stop_icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

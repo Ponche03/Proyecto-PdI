@@ -24,14 +24,10 @@ namespace ProcesamientoDeImágenes
     {
 
         private BitmapImage originalImage;
-
-
-        private bool isDragging = false;  
-        private Point initialMousePosition;  
-        private double initialX, initialY; 
-
-        
-        private double zoomFactor = 1;  
+        private bool isDragging = false;
+        private Point initialMousePosition;
+        private double initialX, initialY;
+        private double zoomFactor = 1;
         private const double ZoomStep = 0.1;
 
         public MainWindow()
@@ -41,14 +37,17 @@ namespace ProcesamientoDeImágenes
 
         private void OnImageMouseDown(object sender, MouseButtonEventArgs e)
         {
-            isDragging = true;
-            initialMousePosition = e.GetPosition(this); 
-            initialX = ImageTranslateTransform.X; 
-            initialY = ImageTranslateTransform.Y;
+            // Allow dragging of the image even if the mouse is clicked inside the container
+            if (e.OriginalSource == UploadedImage || e.OriginalSource == ImageScrollViewer)
+            {
+                isDragging = true;
+                initialMousePosition = e.GetPosition(this);
+                initialX = ImageTranslateTransform.X;
+                initialY = ImageTranslateTransform.Y;
 
-            UploadedImage.CaptureMouse();
+                UploadedImage.CaptureMouse();
+            }
         }
-
         private void OnImageMouseMove(object sender, MouseEventArgs e)
         {
             if (isDragging)
@@ -61,51 +60,51 @@ namespace ProcesamientoDeImágenes
                 ImageTranslateTransform.Y = initialY + deltaY;
             }
         }
-
         private void OnImageMouseUp(object sender, MouseButtonEventArgs e)
         {
             isDragging = false;
-            UploadedImage.ReleaseMouseCapture(); 
+            UploadedImage.ReleaseMouseCapture();
         }
-
         private void OnImageMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            
-            if (e.Delta > 0) 
+            // Zoom in or out depending on the scroll direction
+            if (e.Delta > 0)
             {
                 zoomFactor += ZoomStep;
             }
-            else if (e.Delta < 0) 
+            else if (e.Delta < 0)
             {
                 zoomFactor -= ZoomStep;
-                if (zoomFactor < ZoomStep) zoomFactor = ZoomStep; 
+                if (zoomFactor < ZoomStep) zoomFactor = ZoomStep;
             }
 
             Point mousePosition = e.GetPosition(UploadedImage);
 
+            // Apply scaling to the image
             ImageScaleTransform.ScaleX = zoomFactor;
             ImageScaleTransform.ScaleY = zoomFactor;
 
+            // Adjust translation to zoom around the mouse pointer
             double offsetX = mousePosition.X * ZoomStep;
             double offsetY = mousePosition.Y * ZoomStep;
 
             ImageTranslateTransform.X -= offsetX;
             ImageTranslateTransform.Y -= offsetY;
-            
+
             AdjustImagePosition();
 
             UploadedImage.UpdateLayout();
         }
-
         private void AdjustImagePosition()
         {
-            
+            // Get the dimensions of the image and the scroll viewer
             double scrollViewerWidth = ImageScrollViewer.ViewportWidth;
             double scrollViewerHeight = ImageScrollViewer.ViewportHeight;
 
             double imageWidth = UploadedImage.ActualWidth * ImageScaleTransform.ScaleX;
             double imageHeight = UploadedImage.ActualHeight * ImageScaleTransform.ScaleY;
 
+            // Center the image if it's smaller than the ScrollViewer
             if (imageWidth < scrollViewerWidth)
             {
                 ImageTranslateTransform.X = (scrollViewerWidth - imageWidth) / 2;
@@ -115,6 +114,7 @@ namespace ProcesamientoDeImágenes
                 ImageTranslateTransform.X = Math.Max(Math.Min(ImageTranslateTransform.X, 0), -(imageWidth - scrollViewerWidth));
             }
 
+            // Center the image vertically if it's smaller than the ScrollViewer
             if (imageHeight < scrollViewerHeight)
             {
                 ImageTranslateTransform.Y = (scrollViewerHeight - imageHeight) / 2;
@@ -124,14 +124,14 @@ namespace ProcesamientoDeImágenes
                 ImageTranslateTransform.Y = Math.Max(Math.Min(ImageTranslateTransform.Y, 0), -(imageHeight - scrollViewerHeight));
             }
         }
-
         private void OnImageMouseDownDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (e.ClickCount == 2) 
+            // Open a new window with the image on double-click
+            if (e.ClickCount == 2)
             {
-                if (UploadedImage.Source is BitmapSource bitmapSource) 
+                if (UploadedImage.Source is BitmapSource bitmapSource)
                 {
-                    var imageWindow = new ImageWindow(bitmapSource); 
+                    var imageWindow = new ImageWindow(bitmapSource);
                     imageWindow.Show();
                 }
             }
@@ -177,8 +177,6 @@ namespace ProcesamientoDeImágenes
                 UseShellExecute = true 
             });
         }
-
-
         private void OnUploadImageIconClick(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
@@ -190,7 +188,6 @@ namespace ProcesamientoDeImágenes
             if (openFileDialog.ShowDialog() == true)
             {
            
-
                 BitmapImage bitmapImage = new BitmapImage(new Uri(openFileDialog.FileName));
                 WriteableBitmap writableBitmap = new WriteableBitmap(bitmapImage);
                 UploadedImage.Source = writableBitmap;
@@ -201,7 +198,6 @@ namespace ProcesamientoDeImágenes
             }
 
         }
-
         private void OnDownloadImageIconClick(object sender, RoutedEventArgs e)
         {
             if (UploadedImage.Source is BitmapSource bitmapSource)
@@ -249,81 +245,8 @@ namespace ProcesamientoDeImágenes
         }
 
 
-        private void OnFilterChanged(object sender, SelectionChangedEventArgs e)
-        {
-            string selectedFilter = (comboBoxFilterSelector.SelectedItem as ComboBoxItem)?.Content.ToString();
-
-            if (selectedFilter != null)
-            {
-                ApplyFilter(selectedFilter);
-            }
-        }
-        private void ApplyFilter(string filterName)
-        {
-            if(UploadedImage != null)
-            {
-
-            
-            if (UploadedImage.Source == null)
-            {
-                MessageBox.Show("Please upload an image first!", "", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            BitmapSource bitmapSource = UploadedImage.Source as BitmapSource;
-            if (bitmapSource == null) return;
-
-            WriteableBitmap writableBitmap = new WriteableBitmap(bitmapSource);
-
-
-            switch (filterName)
-            {
-                case "None":
-                    UploadedImage.Source = originalImage;
-                    break;
-                case "Gaussian Blur":
-                    UploadedImage.Source = ApplyGaussianBlur(writableBitmap, 10);
-                    break;
-                case "Contrast Filter":
-                    UploadedImage.Source = ApplyContrastFilter(writableBitmap, 50); 
-                    break;
-                case "Sharpness Filter":
-                    UploadedImage.Source = ApplySharpnessFilter(writableBitmap);
-                    break;
-                case "Threshold Filter":
-                    UploadedImage.Source = ApplyThresholdFilter(writableBitmap, 128);
-                    break;
-                case "Hue/Saturation Filter":
-                    double hueShift = 30.0;  
-                    double saturationFactor = 1.5;
-                    UploadedImage.Source = ApplyHueSaturationFilter(writableBitmap, hueShift, saturationFactor);
-                    break;
-                case "Negative Filter":
-                    UploadedImage.Source = ApplyNegativeFilter(writableBitmap);
-                    break;
-                case "Vignette Filter":
-                    UploadedImage.Source = ApplyVignetteFilter(writableBitmap);
-                    break;
-                case "Mosaic Filter":
-                    UploadedImage.Source = ApplyMosaicFilter(writableBitmap, 10);
-                    break;
-                case "Retro Effect":
-                    UploadedImage.Source = ApplyRetroEffect(writableBitmap);
-                    break;
-                case "Warp Filter":
-                    UploadedImage.Source = ApplyWarpEffect(writableBitmap, 0.5);
-                    break;
-                default:
-                    MessageBox.Show("Unknown filter selected.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    break;
-            }
-
-            }
-
-
-        }
-
-
+       
+        
 
         private void UpdateHistogram(WriteableBitmap bitmap)
         {
@@ -348,7 +271,6 @@ namespace ProcesamientoDeImágenes
             DrawHistogram(GreenHistogram, greenHistogram);
             DrawHistogram(BlueHistogram, blueHistogram);
         }
-
         private void DrawHistogram(Canvas canvas, int[] histogram)
         {
             // Ensure canvas size is valid
@@ -387,7 +309,6 @@ namespace ProcesamientoDeImágenes
                 canvas.Children.Add(bar);
             }
         }
-
         private Brush GetColorForHistogram(Canvas canvas, int index)
         {
             if (canvas == RedHistogram)
@@ -398,7 +319,6 @@ namespace ProcesamientoDeImágenes
                 return Brushes.Blue;
             return Brushes.Gray;
         }
-
         private Color GetPixelColor(WriteableBitmap bitmap, int x, int y)
         {
             // Get the stride (width * 4 bytes per pixel)
@@ -414,10 +334,70 @@ namespace ProcesamientoDeImágenes
             return Color.FromArgb(pixelData[3], pixelData[2], pixelData[1], pixelData[0]); // A, R, G, B
         }
 
+        private void OnFilterButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button)
+            {
+                string filterName = button.Content.ToString();
 
+                if (UploadedImage != null)
+                {
 
+                    if (UploadedImage.Source == null)
+                    {
+                        MessageBox.Show("Please upload an image first!", "", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
 
+                    BitmapSource bitmapSource = UploadedImage.Source as BitmapSource;
+                    if (bitmapSource == null) return;
 
+                    WriteableBitmap writableBitmap = new WriteableBitmap(bitmapSource);
+
+                    switch (filterName)
+                    {
+                        case "None":
+                            UploadedImage.Source = originalImage;
+                            break;
+                        case "Gaussian Blur":
+                            UploadedImage.Source = ApplyGaussianBlur(writableBitmap, 10);
+                            break;
+                        case "Contrast Filter":
+                            UploadedImage.Source = ApplyContrastFilter(writableBitmap, 50);
+                            break;
+                        case "Sharpness Filter":
+                            UploadedImage.Source = ApplySharpnessFilter(writableBitmap);
+                            break;
+                        case "Threshold Filter":
+                            UploadedImage.Source = ApplyThresholdFilter(writableBitmap, 128);
+                            break;
+                        case "Hue/Saturation Filter":
+                            double hueShift = 30.0;
+                            double saturationFactor = 1.5;
+                            UploadedImage.Source = ApplyHueSaturationFilter(writableBitmap, hueShift, saturationFactor);
+                            break;
+                        case "Negative Filter":
+                            UploadedImage.Source = ApplyNegativeFilter(writableBitmap);
+                            break;
+                        case "Vignette Filter":
+                            UploadedImage.Source = ApplyVignetteFilter(writableBitmap);
+                            break;
+                        case "Mosaic Filter":
+                            UploadedImage.Source = ApplyMosaicFilter(writableBitmap, 10);
+                            break;
+                        case "Retro Effect":
+                            UploadedImage.Source = ApplyRetroEffect(writableBitmap);
+                            break;
+                        case "Warp Filter":
+                            UploadedImage.Source = ApplyWarpEffect(writableBitmap, 0.5);
+                            break;
+                        default:
+                            MessageBox.Show("Unknown filter selected.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                    }
+                }
+            }
+        }
 
         private WriteableBitmap ApplyGaussianBlur(WriteableBitmap bitmap, int radius)
         {
@@ -847,6 +827,7 @@ namespace ProcesamientoDeImágenes
 
             return retroBitmap;
         }
+
         public static WriteableBitmap ApplyWarpEffect(WriteableBitmap bitmap, double warpStrength)
         {
             int width = bitmap.PixelWidth;
@@ -888,9 +869,6 @@ namespace ProcesamientoDeImágenes
             warpedBitmap.WritePixels(new Int32Rect(0, 0, width, height), warpedData, stride, 0);
             return warpedBitmap;
         }
-
-
-
 
     }
 

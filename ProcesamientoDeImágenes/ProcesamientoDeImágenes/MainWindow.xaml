@@ -16,7 +16,6 @@
         <Style TargetType="Button">
             <Setter Property="FontFamily" Value="Arial Narrow"/>
         </Style>
-
         <Style x:Key="SidebarButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -46,6 +45,25 @@
             </Style.Triggers>
 
         </Style>
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Background" Value="#FF0F0F26"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontFamily" Value="Arial Narrow"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" Padding="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </Window.Resources>
 
     <Grid>
@@ -211,9 +229,6 @@
             </Grid.ColumnDefinitions>
 
 
-
-
-
             <!-- Upload Image Icon -->
             <Button Click="OnUploadImageIconClick" Grid.Column="4" Grid.Row="22" Background="Transparent" BorderThickness="0">
                 <Image Source="/Assets/Icons/UploadImageIcon.png" Stretch="Fill"/>
@@ -224,24 +239,7 @@
                 <Image Source="/Assets/Icons/DownloadImageIcon.png" Stretch="Fill"/>
             </Button>
 
-
-            <ComboBox x:Name="comboBoxFilterSelector" Grid.Column="8" Grid.Row="22" 
-          HorizontalAlignment="Center" Margin="0,10,0,30" SelectedIndex="0" FontFamily="Arial Narrow" SelectionChanged="OnFilterChanged" BorderBrush="{x:Null}" Grid.RowSpan="2" Background="{x:Null}" Foreground="#FF353535">
-                <ComboBoxItem>None</ComboBoxItem>
-                <ComboBoxItem>Gaussian Blur</ComboBoxItem>
-                <ComboBoxItem>Contrast Filter</ComboBoxItem>
-                <ComboBoxItem>Sharpness Filter</ComboBoxItem>
-                <ComboBoxItem>Threshold Filter</ComboBoxItem>
-                <ComboBoxItem>Hue/Saturation Filter</ComboBoxItem>
-                <ComboBoxItem>Negative Filter</ComboBoxItem>
-                <ComboBoxItem>Vignette Filter</ComboBoxItem>
-                <ComboBoxItem>Mosaic Filter</ComboBoxItem>
-                <ComboBoxItem>Retro Effect</ComboBoxItem>
-                <ComboBoxItem>Warp Filter</ComboBoxItem>
-            </ComboBox>
-
-
-            <Border Grid.Column="3" Grid.ColumnSpan="11" Grid.RowSpan="18" Grid.Row="3" BorderBrush="#FF0F0F26" BorderThickness="2">
+            <Border Grid.Column="3" Grid.ColumnSpan="11" Grid.RowSpan="18" Grid.Row="3" BorderBrush="#FF0F0F26" BorderThickness="2" CornerRadius="10">
                 <ScrollViewer x:Name="ImageScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <Image x:Name="UploadedImage" Stretch="None" 
                MouseLeftButtonDown="OnImageMouseDown" 
@@ -261,22 +259,87 @@
 
 
             <!-- Histogram Red -->
-            <Border Grid.Column="18" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="5" 
+            <Border Grid.Column="18" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="3" CornerRadius="10"
         BorderBrush="Beige" BorderThickness="2">
                 <Canvas Background="Transparent" x:Name="RedHistogram"/>
             </Border>
 
             <!-- Histogram Green -->
-            <Border Grid.Column="29" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="5" 
+            <Border Grid.Column="29" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="3" CornerRadius="10"
         BorderBrush="Beige" BorderThickness="2">
                 <Canvas Background="Transparent" x:Name="GreenHistogram"/>
             </Border>
 
             <!-- Histogram Blue -->
-            <Border Grid.Column="23" Grid.ColumnSpan="7" Grid.RowSpan="8" Grid.Row="13" 
+            <Border Grid.Column="23" Grid.ColumnSpan="7" Grid.RowSpan="8" Grid.Row="10" CornerRadius="10"
         BorderBrush="Beige" BorderThickness="2" Margin="18,30,12,30">
                 <Canvas Background="Transparent" x:Name="BlueHistogram"/>
             </Border>
+
+
+            <!-- Filter Selection -->
+            <Border Grid.Column="18" Grid.ColumnSpan="17" Grid.RowSpan="2" Grid.Row="19" 
+        BorderBrush="#FF0F0F26" BorderThickness="2" Padding="5" CornerRadius="10" RenderTransformOrigin="0.5,0.5">
+                <Border.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform AngleY="-0.228"/>
+                        <RotateTransform/>
+                        <TranslateTransform Y="-0.996"/>
+                    </TransformGroup>
+                </Border.RenderTransform>
+
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer.Resources>
+                        <!-- Custom Style for ScrollBar -->
+                        <Style TargetType="ScrollBar">
+                            <Setter Property="Height" Value="3" />
+                            <!-- Reduced height -->
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ScrollBar">
+                                        <Grid Height="3">
+                                            <!-- Track Background (invisible) -->
+                                            <Rectangle Fill="Transparent" Height="3" />
+
+                                            <!-- Thumb (Draggable part of the scrollbar) -->
+                                            <Track Name="PART_Track">
+                                                <Track.Thumb>
+                                                    <Thumb>
+                                                        <Thumb.Template>
+                                                            <ControlTemplate TargetType="Thumb">
+                                                                <Border Height="3" Width="Auto" CornerRadius="1.5"
+                                                                Background="Gray" />
+                                                            </ControlTemplate>
+                                                        </Thumb.Template>
+                                                    </Thumb>
+                                                </Track.Thumb>
+                                            </Track>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ScrollViewer.Resources>
+               
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" RenderTransformOrigin="0.506,0.623">
+                        <Button Content="None" Style="{StaticResource RoundedButtonStyle}" Click="OnFilterButtonClick"/>
+                        <Button Content="Gaussian Blur" Style="{StaticResource RoundedButtonStyle}" Click="OnFilterButtonClick"/>
+                        <Button Content="Contrast Filter" Style="{StaticResource RoundedButtonStyle}" Click="OnFilterButtonClick"/>
+                        <Button Content="Sharpness Filter" Style="{StaticResource RoundedButtonStyle}" Click="OnFilterButtonClick"/>
+                        <Button Content="Threshold Filter" Style="{StaticResource RoundedButtonStyle}" Click="OnFilterButtonClick"/>
+                        <Button Content="Hue/Saturation Filter" Style="{StaticResource RoundedButtonStyle}" Click="OnFilterButtonClick"/>
+                        <Button Content="Negative Filter" Style="{StaticResource RoundedButtonStyle}" Click="OnFilterButtonClick"/>
+                        <Button Content="Vignette Filter" Style="{StaticResource RoundedButtonStyle}" Click="OnFilterButtonClick"/>
+                        <Button Content="Mosaic Filter" Style="{StaticResource RoundedButtonStyle}" Click="OnFilterButtonClick"/>
+                        <Button Content="Retro Effect" Style="{StaticResource RoundedButtonStyle}" Click="OnFilterButtonClick"/>
+                        <Button Content="Warp Filter" Style="{StaticResource RoundedButtonStyle}" Click="OnFilterButtonClick"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
 
 
         </Grid>
