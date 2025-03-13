@@ -38,8 +38,43 @@
     <ApplicationIcon>Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AForge, Version=2.2.5.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
+      <HintPath>..\packages\AForge.2.2.5\lib\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video, Version=2.2.5.0, Culture=neutral, PublicKeyToken=cbfb6e07d173c401, processorArchitecture=MSIL">
+      <HintPath>..\packages\AForge.Video.2.2.5\lib\AForge.Video.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video.DirectShow, Version=2.2.5.0, Culture=neutral, PublicKeyToken=61ea4348d43881b7, processorArchitecture=MSIL">
+      <HintPath>..\packages\AForge.Video.DirectShow.2.2.5\lib\AForge.Video.DirectShow.dll</HintPath>
+    </Reference>
+    <Reference Include="DirectShowLib, Version=2.1.0.1599, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DirectShowLib.1.0.0\lib\DirectShowLib.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenCvSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenCvSharp4.4.10.0.20241108\lib\netstandard2.0\OpenCvSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenCvSharp.WpfExtensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenCvSharp4.WpfExtensions.4.4.0.20200725\lib\net461\OpenCvSharp.WpfExtensions.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Common, Version=4.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.4.7.2\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -110,6 +145,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -247,7 +247,6 @@ namespace ProcesamientoDeImágenes
 
        
         
-
         private void UpdateHistogram(WriteableBitmap bitmap)
         {
             int[] redHistogram = new int[256];
@@ -333,7 +332,6 @@ namespace ProcesamientoDeImágenes
             // Return the color in BGRA format, we convert it to ARGB (A, R, G, B)
             return Color.FromArgb(pixelData[3], pixelData[2], pixelData[1], pixelData[0]); // A, R, G, B
         }
-
         private void OnFilterButtonClick(object sender, RoutedEventArgs e)
         {
             if (sender is Button button)
@@ -398,6 +396,9 @@ namespace ProcesamientoDeImágenes
                 }
             }
         }
+
+
+
 
         private WriteableBitmap ApplyGaussianBlur(WriteableBitmap bitmap, int radius)
         {

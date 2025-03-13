@@ -211,8 +211,7 @@ namespace ProcesamientoDeImágenes
             }
         }
 
-        private void DisplayFilteredFrame(BitmapSource filteredFrame)
-        {
+        private void DisplayFilteredFrame(BitmapSource filteredFrame) {
             // Assuming you have an Image control to display the filtered frame
             FilteredImage.Source = filteredFrame;
         }
