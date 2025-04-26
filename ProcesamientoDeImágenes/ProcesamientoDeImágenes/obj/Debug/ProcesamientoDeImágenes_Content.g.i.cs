@@ -8,8 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("assets/icons/pause_icon.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("assets/icons/play_icon.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("assets/icons/stop_icon.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("assets/haarcascade/haarcascade_frontalface_default.xml")]
 
 

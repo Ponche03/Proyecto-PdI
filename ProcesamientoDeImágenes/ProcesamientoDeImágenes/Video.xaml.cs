@@ -62,7 +62,7 @@ namespace ProcesamientoDeImágenes
         }
         private void UserManualClick(object sender, RoutedEventArgs e)
         {
-            string url = "https://drive.google.com/file/d/1SZQoL3c3r61YYPyqq00cw3CIdI_oyrap/view?usp=drive_link";
+            string url = "https://firebasestorage.googleapis.com/v0/b/studify-707e5/o/MID-picture-lab-manual-de-usuario.pdf?alt=media&token=b06e1bde-cadc-446f-a533-7dd3db592cd2";
             Process.Start(new ProcessStartInfo
             {
                 FileName = url,
