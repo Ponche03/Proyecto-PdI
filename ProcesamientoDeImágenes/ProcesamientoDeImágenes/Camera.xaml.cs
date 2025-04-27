@@ -18,6 +18,8 @@ using System.Drawing.Imaging;
 
 using AForge.Video;
 using AForge.Video.DirectShow;
+using OpenCvSharp;
+using System.IO;
 
 
 namespace ProcesamientoDeImágenes
@@ -25,11 +27,12 @@ namespace ProcesamientoDeImágenes
 
     public partial class Camera : System.Windows.Window
     {
-
+        private string selectedFilter = "None";
 
         private FilterInfoCollection videoDevices;
         private VideoCaptureDevice videoSource;
 
+        private bool isFlipped = false;
 
         public Camera()
         {
@@ -76,9 +79,23 @@ namespace ProcesamientoDeImágenes
             {
                 Dispatcher.Invoke(() =>
                 {
-                   
-                    BitmapImage bitmapImage = ConvertBitmap(eventArgs.Frame);
-                    CameraDisplay.Source = bitmapImage;
+                    // Convert the frame (Bitmap) to OpenCvSharp Mat
+                    Mat frame = OpenCvSharp.Extensions.BitmapConverter.ToMat(eventArgs.Frame);
+
+                    // Apply the selected filter
+                    Mat filteredFrame = ApplySelectedFilter(frame);
+
+                    // Convert the filtered Mat to System.Drawing.Bitmap
+                    System.Drawing.Bitmap bitmap = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(filteredFrame);
+
+                    // Convert the System.Drawing.Bitmap to BitmapSource for WPF
+                    BitmapSource bitmapSource = ConvertToBitmapSource(bitmap);
+
+                    // Display the filtered frame in the CameraDisplay
+                    CameraDisplay.Source = bitmapSource;
+
+                    // Optionally, draw histograms for the filtered frame
+                    DrawHistograms(filteredFrame);
                 });
             }
             catch (Exception ex)
@@ -87,9 +104,102 @@ namespace ProcesamientoDeImágenes
             }
         }
 
+        private BitmapSource ConvertToBitmapSource(System.Drawing.Bitmap bitmap)
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Bmp);
+                memoryStream.Seek(0, SeekOrigin.Begin);
+
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memoryStream;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+
+                return bitmapImage;
+            }
+        }
+
+
+
+        private void DrawHistograms(Mat frame)
+        {
+            if (frame.Empty())
+                return;
+
+            // Separate the frame into B, G, R channels
+            Mat[] bgr = Cv2.Split(frame);
+
+            int histSize = 256;
+            Rangef histRange = new Rangef(0, 256);
+
+            // Calculate histograms for each channel
+            Mat bHist = new Mat();
+            Mat gHist = new Mat();
+            Mat rHist = new Mat();
+
+            Cv2.CalcHist(new Mat[] { bgr[0] }, new int[] { 0 }, null, bHist, 1, new int[] { histSize }, new Rangef[] { histRange });
+            Cv2.CalcHist(new Mat[] { bgr[1] }, new int[] { 0 }, null, gHist, 1, new int[] { histSize }, new Rangef[] { histRange });
+            Cv2.CalcHist(new Mat[] { bgr[2] }, new int[] { 0 }, null, rHist, 1, new int[] { histSize }, new Rangef[] { histRange });
+
+            // Normalize histograms to fit Canvas height
+            int canvasHeight = 100; // Adjust based on your Canvas size
+            Cv2.Normalize(bHist, bHist, 0, canvasHeight, NormTypes.MinMax);
+            Cv2.Normalize(gHist, gHist, 0, canvasHeight, NormTypes.MinMax);
+            Cv2.Normalize(rHist, rHist, 0, canvasHeight, NormTypes.MinMax);
+
+            // Clear previous drawings
+            HistogramRedCanvas.Children.Clear();
+            HistogramGreenCanvas.Children.Clear();
+            HistogramBlueCanvas.Children.Clear();
+
+            // Draw histograms
+            DrawHistogramOnCanvas(HistogramRedCanvas, rHist, System.Windows.Media.Brushes.Red);
+            DrawHistogramOnCanvas(HistogramGreenCanvas, gHist, System.Windows.Media.Brushes.Green);
+            DrawHistogramOnCanvas(HistogramBlueCanvas, bHist, System.Windows.Media.Brushes.Blue);
+
+            // Dispose
+            foreach (var mat in bgr)
+                mat.Dispose();
+            bHist.Dispose();
+            gHist.Dispose();
+            rHist.Dispose();
+        }
+
+        private void DrawHistogramOnCanvas(Canvas canvas, Mat hist, System.Windows.Media.Brush color)
+        {
+            if (canvas.ActualWidth == 0 || canvas.ActualHeight == 0)
+                return;
+
+            int histSize = 256;
+            double binWidth = canvas.ActualWidth / histSize;
+            double canvasHeight = canvas.ActualHeight;
+
+            Polyline polyline = new Polyline
+            {
+                Stroke = color,  
+                StrokeThickness = 2,
+                StrokeLineJoin = PenLineJoin.Round,
+                SnapsToDevicePixels = true,
+            };
+
+            for (int i = 0; i < histSize; i++)
+            {
+                double x = i * binWidth;
+                double y = canvasHeight - hist.At<float>(i);  
+
+                polyline.Points.Add(new System.Windows.Point(x, y));
+            }
+
+            canvas.Children.Add(polyline);
+        }
+
+
+
         private BitmapImage ConvertBitmap(Bitmap bitmap)
         {
-           
+
             BitmapImage bitmapImage = new BitmapImage();
             using (var memory = new System.IO.MemoryStream())
             {
@@ -110,8 +220,8 @@ namespace ProcesamientoDeImágenes
             if (videoSource != null && videoSource.IsRunning)
             {
                 videoSource.SignalToStop();
-                videoSource.WaitForStop(); 
-                videoSource.NewFrame -= NewFrameReceived; 
+                videoSource.WaitForStop();
+                videoSource.NewFrame -= NewFrameReceived;
             }
         }
 
@@ -120,14 +230,14 @@ namespace ProcesamientoDeImágenes
             Video newWindow = new Video();
             newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             newWindow.Show();
-           
+
 
             this.Close();
         }
 
         private void GoToCameraPage(object sender, RoutedEventArgs e)
         {
-          
+
         }
 
         private void GoToImageWindow(object sender, RoutedEventArgs e)
@@ -136,7 +246,7 @@ namespace ProcesamientoDeImágenes
             MainWindow newWindow = new MainWindow();
             newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             newWindow.Show();
-           
+
 
             this.Close();
 
@@ -164,14 +274,55 @@ namespace ProcesamientoDeImágenes
 
         private void OnFlipImageIconClick(object sender, RoutedEventArgs e)
         {
-            // Handle image flip functionality here
+            if (!isFlipped)
+            {
+                CameraDisplay.RenderTransform = new ScaleTransform
+                {
+                    ScaleX = -1,
+                    ScaleY = 1
+                };
+            }
+            else
+            {
+                CameraDisplay.RenderTransform = new ScaleTransform
+                {
+                    ScaleX = 1,
+                    ScaleY = 1
+                };
+            }
+
+            isFlipped = !isFlipped;
         }
+
 
         private void OnScreenShotIconClick(object sender, RoutedEventArgs e)
         {
-            // Handle screenshot functionality here
+            if (CameraDisplay.Source is BitmapImage bitmapImage)
+            {
+                SaveBitmapImage(bitmapImage);
+            }
         }
 
+        private void SaveBitmapImage(BitmapImage bitmapImage)
+        {
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
+
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                FileName = "Screenshot",
+                DefaultExt = ".png",
+                Filter = "PNG Image (.png)|*.png|JPEG Image (.jpg)|*.jpg"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                using (var fileStream = new System.IO.FileStream(dialog.FileName, System.IO.FileMode.Create))
+                {
+                    encoder.Save(fileStream);
+                }
+            }
+        }
         private void OnFaceDetectIconClick(object sender, RoutedEventArgs e)
         {
             // Handle face detection functionality here
@@ -184,572 +335,295 @@ namespace ProcesamientoDeImágenes
         {
             if (sender is Button button)
             {
-                string filterName = button.Content.ToString();
-
-                if (CameraDisplay != null && CameraDisplay.Source != null)
-                {
-                    // Capture the current video frame
-                    RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
-                        (int)CameraDisplay.ActualWidth, (int)CameraDisplay.ActualHeight,
-                        96, 96, PixelFormats.Pbgra32);
-
-                    renderBitmap.Render(CameraDisplay);
-
-                    // Convert the captured frame to a WriteableBitmap
-                    WriteableBitmap writableBitmap = new WriteableBitmap(renderBitmap);
-
-                    switch (filterName)
-                    {
-                        case "None":
-                           
-                            break;
-
-                        case "Gaussian Blur":
-                            // Declare radius for Gaussian blur filter
-                            int blurRadius = 10;
-                            var blurredFrame = ApplyGaussianBlur(writableBitmap, blurRadius);
-                            DisplayFilteredFrame(blurredFrame); // Display the filtered frame
-                            break;
-
-                        case "Contrast Filter":
-                            // Declare contrast level for Contrast filter
-                            int contrastLevel = 50;
-                            var contrastFrame = ApplyContrastFilter(writableBitmap, contrastLevel);
-                            DisplayFilteredFrame(contrastFrame); // Display the filtered frame
-                            break;
-
-                        case "Sharpness Filter":
-                            var sharpnessFrame = ApplySharpnessFilter(writableBitmap);
-                            DisplayFilteredFrame(sharpnessFrame); // Display the filtered frame
-                            break;
-
-                        case "Threshold Filter":
-                            // Declare threshold level
-                            int thresholdLevel = 128;
-                            var thresholdFrame = ApplyThresholdFilter(writableBitmap, thresholdLevel);
-                            DisplayFilteredFrame(thresholdFrame); // Display the filtered frame
-                            break;
-
-                        case "Hue/Saturation Filter":
-                            // Declare variables for Hue and Saturation shift
-                            double hueShift = 30.0;
-                            double saturationFactor = 1.5;
-                            var hueSaturationFrame = ApplyHueSaturationFilter(writableBitmap, hueShift, saturationFactor);
-                            DisplayFilteredFrame(hueSaturationFrame); // Display the filtered frame
-                            break;
-
-                        case "Negative Filter":
-                            // Apply negative filter
-                            var negativeFrame = ApplyNegativeFilter(writableBitmap);
-                            DisplayFilteredFrame(negativeFrame); // Display the filtered frame
-                            break;
-
-                        case "Vignette Filter":
-                            // Apply vignette filter
-                            var vignetteFrame = ApplyVignetteFilter(writableBitmap);
-                            DisplayFilteredFrame(vignetteFrame); // Display the filtered frame
-                            break;
-
-                        case "Mosaic Filter":
-                            // Declare mosaic size
-                            int mosaicSize = 10;
-                            var mosaicFrame = ApplyMosaicFilter(writableBitmap, mosaicSize);
-                            DisplayFilteredFrame(mosaicFrame); // Display the filtered frame
-                            break;
-
-                        case "Retro Effect":
-                            // Apply retro effect
-                            var retroFrame = ApplyRetroEffect(writableBitmap);
-                            DisplayFilteredFrame(retroFrame); // Display the filtered frame
-                            break;
-
-                        case "Warp Filter":
-                            // Declare warp factor
-                            double warpFactor = 0.5;
-                            var warpFrame = ApplyWarpEffect(writableBitmap, warpFactor);
-                            DisplayFilteredFrame(warpFrame); // Display the filtered frame
-                            break;
-
-                        default:
-                            MessageBox.Show("Unknown filter selected.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                            break;
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("No video loaded. Please upload a video first.", "", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+                selectedFilter = button.Content.ToString();
             }
         }
-
-        private void DisplayFilteredFrame(BitmapSource filteredFrame)
+        private Mat ApplySelectedFilter(Mat frame)
         {
-            // Assuming you have an Image control to display the filtered frame
-            FilteredImage.Source = filteredFrame;
-        }
+            Mat filtered = new Mat();
 
-        private WriteableBitmap ApplyGaussianBlur(WriteableBitmap bitmap, int radius)
-        {
-            int width = bitmap.PixelWidth;
-            int height = bitmap.PixelHeight;
-            int stride = width * 4;
-
-            byte[] pixels = new byte[height * stride];
-            bitmap.CopyPixels(pixels, stride, 0);
-
-            // Gaussian Kernel for 3x3 blur
-            double[,] kernel = {
-                 { 1, 2, 1 },
-                 { 2, 4, 2 },
-                 { 1, 2, 1 }
-             };
-
-            // int kernelSize = 3;
-            double kernelSum = 16.0;
-
-            byte[] blurredPixels = new byte[pixels.Length];
-
-            for (int y = 1; y < height - 1; y++)
+            switch (selectedFilter)
             {
-                for (int x = 1; x < width - 1; x++)
+                case "None":
+                    filtered = frame.Clone();
+                    break;
+
+                case "Gaussian Blur":
+                    Cv2.GaussianBlur(frame, filtered, new OpenCvSharp.Size(9, 9), 0);
+                    break;
+
+                case "Contrast Filter":
+                    double alpha = 1.5;
+                    int beta = 20;
+                    Cv2.ConvertScaleAbs(frame, filtered, alpha, beta);
+                    break;
+
+                case "Mosaic Filter":
+                    filtered = ApplyMosaicFilterOpenCV(frame, 10);
+                    break;
+
+                case "Sharpness Filter":
+                    filtered = ApplySharpnessFilterOpenCV(frame);
+                    break;
+
+                case "Threshold Filter":
+                    int thresholdValue = 100;
+                    filtered = ApplyThresholdFilterOpenCV(frame, thresholdValue);
+                    break;
+
+                case "Hue/Saturation Filter":
+                    double hueShift = 45.0; // degrees
+                    double saturationBoost = 1.5; // 1.0 = no change
+                    filtered = ApplyHueSaturationFilterOpenCV(frame, hueShift, saturationBoost);
+                    break;
+
+                case "Negative Filter":
+
+                    filtered = ApplyNegativeFilterOpenCV(frame);
+                    break;
+
+                case "Vignette Filter":
+                    filtered = ApplyVignetteFilterOpenCV(frame);
+                    break;
+
+                case "Retro Effect":
+                    filtered = ApplyRetroEffectOpenCV(frame);
+                    break;
+
+                case "Warp Filter":
+                    filtered = ApplyWarpEffectOpenCV(frame, 0.3);
+                    break;
+
+                default:
+                    filtered = frame.Clone();
+                    break;
+            }
+
+            return filtered;
+        }
+
+
+
+        private Mat ApplyMosaicFilterOpenCV(Mat input, int blockSize)
+        {
+            Mat small = new Mat();
+            Mat mosaic = new Mat();
+
+            // Resize down
+            Cv2.Resize(input, small, new OpenCvSharp.Size(input.Width / blockSize, input.Height / blockSize), interpolation: InterpolationFlags.Nearest);
+
+            // Resize up
+            Cv2.Resize(small, mosaic, new OpenCvSharp.Size(input.Width, input.Height), interpolation: InterpolationFlags.Nearest);
+
+            small.Dispose();
+            return mosaic;
+        }
+        private Mat ApplySharpnessFilterOpenCV(Mat input)
+        {
+            Mat output = new Mat();
+
+            Mat kernel = new Mat(3, 3, MatType.CV_32F);
+
+            // Set the kernel values manually (stronger sharpness)
+            kernel.Set(0, 0, -1f);
+            kernel.Set(0, 1, -1f);
+            kernel.Set(0, 2, -1f);
+            kernel.Set(1, 0, -1f);
+            kernel.Set(1, 1, 9f);
+            kernel.Set(1, 2, -1f);
+            kernel.Set(2, 0, -1f);
+            kernel.Set(2, 1, -1f);
+            kernel.Set(2, 2, -1f);
+
+            // Apply the filter
+            Cv2.Filter2D(input, output, input.Type(), kernel);
+
+            return output;
+        }
+        private Mat ApplyThresholdFilterOpenCV(Mat input, int threshold)
+        {
+            Mat gray = new Mat();
+            Mat binary = new Mat();
+
+            // Convert input to grayscale first
+            Cv2.CvtColor(input, gray, ColorConversionCodes.BGR2GRAY);
+
+            // Apply threshold
+            Cv2.Threshold(gray, binary, threshold, 255, ThresholdTypes.Binary);
+
+            return binary;
+        }
+        private Mat ApplyHueSaturationFilterOpenCV(Mat input, double hueShiftDegrees, double saturationFactor)
+        {
+            Mat hsv = new Mat();
+            Mat result = new Mat();
+
+            // Convert input from BGR to HSV
+            Cv2.CvtColor(input, hsv, ColorConversionCodes.BGR2HSV);
+
+            // Split channels
+            Mat[] hsvChannels = Cv2.Split(hsv);
+
+            Mat hue = hsvChannels[0];
+            Mat saturation = hsvChannels[1];
+            Mat value = hsvChannels[2];
+
+            // ---- Apply hue shift ----
+            double hueShift = hueShiftDegrees / 2.0; // OpenCV uses 0-179 for Hue
+
+            for (int y = 0; y < hue.Rows; y++)
+            {
+                for (int x = 0; x < hue.Cols; x++)
                 {
-                    double blue = 0, green = 0, red = 0;
-
-                    for (int ky = -1; ky <= 1; ky++)
-                    {
-                        for (int kx = -1; kx <= 1; kx++)
-                        {
-                            int pixelIndex = ((y + ky) * stride) + ((x + kx) * 4);
-                            double kernelValue = kernel[ky + 1, kx + 1];
-
-                            blue += pixels[pixelIndex] * kernelValue;
-                            green += pixels[pixelIndex + 1] * kernelValue;
-                            red += pixels[pixelIndex + 2] * kernelValue;
-                        }
-                    }
-
-                    int index = (y * stride) + (x * 4);
-                    blurredPixels[index] = (byte)(blue / kernelSum);
-                    blurredPixels[index + 1] = (byte)(green / kernelSum);
-                    blurredPixels[index + 2] = (byte)(red / kernelSum);
-                    blurredPixels[index + 3] = pixels[index + 3];
+                    byte oldHue = hue.At<byte>(y, x);
+                    int newHue = (int)(oldHue + hueShift);
+                    if (newHue < 0) newHue += 180;
+                    if (newHue >= 180) newHue -= 180;
+                    hue.Set<byte>(y, x, (byte)newHue);
                 }
             }
 
-            WriteableBitmap blurredBitmap = new WriteableBitmap(width, height, 96, 96, bitmap.Format, null);
-            blurredBitmap.WritePixels(new Int32Rect(0, 0, width, height), blurredPixels, stride, 0);
-
-            return blurredBitmap;
-        }
-
-        private BitmapSource ApplyMosaicFilter(WriteableBitmap bitmap, int blockSize)
-        {
-            int width = bitmap.PixelWidth;
-            int height = bitmap.PixelHeight;
-            int stride = width * 4; // 4 bytes per pixel (BGRA)
-
-            byte[] pixelData = new byte[height * stride];
-            bitmap.CopyPixels(pixelData, stride, 0);
-
-            for (int y = 0; y < height; y += blockSize)
+            // ---- Apply saturation scaling ----
+            for (int y = 0; y < saturation.Rows; y++)
             {
-                for (int x = 0; x < width; x += blockSize)
+                for (int x = 0; x < saturation.Cols; x++)
                 {
-                    int redSum = 0, greenSum = 0, blueSum = 0, count = 0;
-
-                    // Calculate average color in block
-                    for (int j = 0; j < blockSize && (y + j) < height; j++)
-                    {
-                        for (int i = 0; i < blockSize && (x + i) < width; i++)
-                        {
-                            int pixelIndex = ((y + j) * stride) + ((x + i) * 4);
-                            blueSum += pixelData[pixelIndex];     // Blue
-                            greenSum += pixelData[pixelIndex + 1]; // Green
-                            redSum += pixelData[pixelIndex + 2];   // Red
-                            count++;
-                        }
-                    }
-
-                    if (count == 0) continue;
-
-                    byte avgBlue = (byte)(blueSum / count);
-                    byte avgGreen = (byte)(greenSum / count);
-                    byte avgRed = (byte)(redSum / count);
-
-                    // Apply average color to block
-                    for (int j = 0; j < blockSize && (y + j) < height; j++)
-                    {
-                        for (int i = 0; i < blockSize && (x + i) < width; i++)
-                        {
-                            int pixelIndex = ((y + j) * stride) + ((x + i) * 4);
-                            pixelData[pixelIndex] = avgBlue;      // Set Blue
-                            pixelData[pixelIndex + 1] = avgGreen; // Set Green
-                            pixelData[pixelIndex + 2] = avgRed;   // Set Red
-                        }
-                    }
+                    byte oldSaturation = saturation.At<byte>(y, x);
+                    int newSaturation = Clamp((int)(oldSaturation * saturationFactor), 0, 255);
+                    saturation.Set<byte>(y, x, (byte)newSaturation);
                 }
             }
 
-            // Create new bitmap from modified pixels
-            WriteableBitmap mosaicBitmap = new WriteableBitmap(bitmap.PixelWidth, bitmap.PixelHeight,
-                                                                bitmap.DpiX, bitmap.DpiY,
-                                                                bitmap.Format, bitmap.Palette);
-            mosaicBitmap.WritePixels(new Int32Rect(0, 0, width, height), pixelData, stride, 0);
+            // Merge channels back
+            Cv2.Merge(new Mat[] { hue, saturation, value }, hsv);
 
-            return mosaicBitmap;
+            // Convert back to BGR
+            Cv2.CvtColor(hsv, result, ColorConversionCodes.HSV2BGR);
+
+            return result;
         }
-
-        private BitmapSource ApplyContrastFilter(WriteableBitmap bitmap, double contrastFactor)
-        {
-            int width = bitmap.PixelWidth;
-            int height = bitmap.PixelHeight;
-            int stride = width * 4; // 4 bytes per pixel (BGRA)
-
-            byte[] pixelData = new byte[height * stride];
-            bitmap.CopyPixels(pixelData, stride, 0);
-
-            // Calculate contrast adjustment factor
-            double contrast = (100.0 + contrastFactor) / 100.0;
-            contrast *= contrast;
-
-            for (int i = 0; i < pixelData.Length; i += 4) // Iterate through each pixel (BGRA)
-            {
-                for (int j = 0; j < 3; j++) // Modify only R, G, and B channels
-                {
-                    double color = pixelData[i + j] / 255.0; // Normalize to (0 to 1)
-                    color -= 0.5;  // Shift to center at 0
-                    color *= contrast; // Apply contrast factor
-                    color += 0.5;  // Shift back
-                    color *= 255.0; // Convert back to range (0 to 255)
-
-                    // Ensure the values are within the valid range
-                    pixelData[i + j] = (byte)Math.Max(0, Math.Min(255, color));
-                }
-            }
-
-            // Create a new image with the modified pixels
-            WriteableBitmap contrastBitmap = new WriteableBitmap(width, height, bitmap.DpiX, bitmap.DpiY, bitmap.Format, bitmap.Palette);
-            contrastBitmap.WritePixels(new Int32Rect(0, 0, width, height), pixelData, stride, 0);
-
-            return contrastBitmap;
-        }
-
-        private BitmapSource ApplySharpnessFilter(WriteableBitmap bitmap)
-        {
-            int width = bitmap.PixelWidth;
-            int height = bitmap.PixelHeight;
-            int stride = width * 4; // 4 bytes per pixel (BGRA)
-
-            byte[] pixelData = new byte[height * stride];
-            byte[] resultPixelData = new byte[height * stride];
-            bitmap.CopyPixels(pixelData, stride, 0);
-
-            // Sharpening kernel (3x3)
-            int[,] kernel = {
-             {  0, -1,  0 },
-             { -1,  5, -1 },
-             {  0, -1,  0 }
-             };
-
-            int kernelSize = 3;
-            int offset = kernelSize / 2;
-
-            for (int y = offset; y < height - offset; y++)
-            {
-                for (int x = offset; x < width - offset; x++)
-                {
-                    int pixelIndex = (y * stride) + (x * 4);
-
-                    double[] newColor = { 0, 0, 0 }; // For R, G, B
-
-                    // Apply the kernel to each color channel
-                    for (int ky = -offset; ky <= offset; ky++)
-                    {
-                        for (int kx = -offset; kx <= offset; kx++)
-                        {
-                            int neighborIndex = ((y + ky) * stride) + ((x + kx) * 4);
-                            int weight = kernel[ky + offset, kx + offset];
-
-                            for (int c = 0; c < 3; c++) // Process R, G, B channels
-                            {
-                                newColor[c] += pixelData[neighborIndex + c] * weight;
-                            }
-                        }
-                    }
-
-                    // Assign the new sharpened values to the result pixel
-                    for (int c = 0; c < 3; c++)
-                    {
-                        resultPixelData[pixelIndex + c] = (byte)Math.Max(0, Math.Min(255, newColor[c]));
-                    }
-
-                    // Preserve the alpha channel
-                    resultPixelData[pixelIndex + 3] = pixelData[pixelIndex + 3];
-                }
-            }
-
-            // Create a new bitmap with the sharpened pixels
-            WriteableBitmap sharpBitmap = new WriteableBitmap(width, height, bitmap.DpiX, bitmap.DpiY, bitmap.Format, bitmap.Palette);
-            sharpBitmap.WritePixels(new Int32Rect(0, 0, width, height), resultPixelData, stride, 0);
-
-            return sharpBitmap;
-        }
-
-        private WriteableBitmap ApplyThresholdFilter(WriteableBitmap bitmap, int threshold)
-        {
-            // Ensure threshold is within byte range using the manual Clamp method
-            byte thresholdByte = Clamp(threshold, 0, 255);
-
-            int width = bitmap.PixelWidth;
-            int height = bitmap.PixelHeight;
-            int stride = width * 4; // For RGBA
-
-            byte[] pixels = new byte[height * stride];
-            bitmap.CopyPixels(pixels, stride, 0);
-
-            byte[] thresholdedPixels = new byte[pixels.Length];
-
-            // Loop through each pixel and apply the threshold filter
-            for (int i = 0; i < pixels.Length; i += 4)
-            {
-                // Get the RGB values
-                byte red = pixels[i + 2];
-                byte green = pixels[i + 1];
-                byte blue = pixels[i];
-
-                // Convert to grayscale using standard luminance formula
-                byte gray = (byte)((red * 0.3) + (green * 0.59) + (blue * 0.11));
-
-                // Apply threshold (comparison works with byte values)
-                byte newColor = (gray >= thresholdByte) ? (byte)255 : (byte)0;
-
-                // Set the thresholded color (no change to alpha)
-                thresholdedPixels[i] = newColor;      // Blue
-                thresholdedPixels[i + 1] = newColor;  // Green
-                thresholdedPixels[i + 2] = newColor;  // Red
-                thresholdedPixels[i + 3] = pixels[i + 3]; // Alpha (unchanged)
-            }
-
-            // Create a new WriteableBitmap to display the filtered result
-            WriteableBitmap thresholdedBitmap = new WriteableBitmap(width, height, 96, 96, bitmap.Format, null);
-            thresholdedBitmap.WritePixels(new Int32Rect(0, 0, width, height), thresholdedPixels, stride, 0);
-
-            return thresholdedBitmap;
-        }
-
-        private byte Clamp(int value, byte min, byte max)
+        private int Clamp(int value, int min, int max)
         {
             if (value < min) return min;
             if (value > max) return max;
-            return (byte)value;
+            return value;
         }
-
-        private BitmapSource ApplyHueSaturationFilter(WriteableBitmap bitmap, double hueShift, double saturationFactor)
+        private Mat ApplyNegativeFilterOpenCV(Mat input)
         {
-            int width = bitmap.PixelWidth;
-            int height = bitmap.PixelHeight;
-            int stride = width * 4; // 4 bytes per pixel (BGRA)
+            Mat output = new Mat();
 
-            byte[] pixelData = new byte[height * stride];
-            bitmap.CopyPixels(pixelData, stride, 0);
+            // Invert the image colors
+            Cv2.BitwiseNot(input, output);
 
-            for (int i = 0; i < pixelData.Length; i += 4) // Iterate over each pixel (BGRA)
-            {
-                byte b = pixelData[i];     // Blue
-                byte g = pixelData[i + 1]; // Green
-                byte r = pixelData[i + 2]; // Red
-
-                // Convert RGB to HSL
-                double rNorm = r / 255.0;
-                double gNorm = g / 255.0;
-                double bNorm = b / 255.0;
-
-                double max = Math.Max(rNorm, Math.Max(gNorm, bNorm));
-                double min = Math.Min(rNorm, Math.Min(gNorm, bNorm));
-                double delta = max - min;
-
-                double hue = 0.0;
-                if (delta != 0)
-                {
-                    if (max == rNorm) hue = (gNorm - bNorm) / delta;
-                    else if (max == gNorm) hue = 2 + (bNorm - rNorm) / delta;
-                    else hue = 4 + (rNorm - gNorm) / delta;
-
-                    hue *= 60.0;
-                    if (hue < 0) hue += 360.0;
-                }
-
-                double lightness = (max + min) / 2.0;
-                double saturation = (max == min) ? 0.0 : (max - min) / (1 - Math.Abs(2 * lightness - 1));
-
-                // Apply the hue shift
-                hue += hueShift;
-                if (hue > 360.0) hue -= 360.0;
-                if (hue < 0.0) hue += 360.0;
-
-                // Apply the saturation adjustment
-                saturation = Math.Max(0.0, Math.Min(1.0, saturation * saturationFactor));
-
-                // Convert HSL back to RGB
-                double c = (1 - Math.Abs(2 * lightness - 1)) * saturation;
-                double x = c * (1 - Math.Abs((hue / 60.0) % 2 - 1));
-                double m = lightness - c / 2.0;
-
-                double rPrime = 0.0, gPrime = 0.0, bPrime = 0.0;
-
-                if (hue >= 0 && hue < 60) { rPrime = c; gPrime = x; bPrime = 0; }
-                else if (hue >= 60 && hue < 120) { rPrime = x; gPrime = c; bPrime = 0; }
-                else if (hue >= 120 && hue < 180) { rPrime = 0; gPrime = c; bPrime = x; }
-                else if (hue >= 180 && hue < 240) { rPrime = 0; gPrime = x; bPrime = c; }
-                else if (hue >= 240 && hue < 300) { rPrime = x; gPrime = 0; bPrime = c; }
-                else { rPrime = c; gPrime = 0; bPrime = x; }
-
-                // Adjust by the m value (offset)
-                rPrime += m;
-                gPrime += m;
-                bPrime += m;
-
-                // Convert RGB back to byte values
-                byte newR = (byte)(Math.Max(0, Math.Min(255, rPrime * 255)));
-                byte newG = (byte)(Math.Max(0, Math.Min(255, gPrime * 255)));
-                byte newB = (byte)(Math.Max(0, Math.Min(255, bPrime * 255)));
-
-                // Update the pixel data with the new RGB values
-                pixelData[i] = newB;
-                pixelData[i + 1] = newG;
-                pixelData[i + 2] = newR;
-            }
-
-            // Create a new WriteableBitmap with the modified pixels
-            WriteableBitmap hueSaturationBitmap = new WriteableBitmap(width, height, bitmap.DpiX, bitmap.DpiY, bitmap.Format, bitmap.Palette);
-            hueSaturationBitmap.WritePixels(new Int32Rect(0, 0, width, height), pixelData, stride, 0);
-
-            return hueSaturationBitmap;
+            return output;
         }
-
-        private BitmapSource ApplyNegativeFilter(WriteableBitmap bitmap)
+        public Mat ApplyVignetteFilterOpenCV(Mat frame)
         {
-            int width = bitmap.PixelWidth;
-            int height = bitmap.PixelHeight;
-            int stride = width * 4; // 4 bytes per pixel (BGRA)
+            int width = frame.Width;
+            int height = frame.Height;
 
-            byte[] pixelData = new byte[height * stride];
-            bitmap.CopyPixels(pixelData, stride, 0);
-
-            for (int i = 0; i < pixelData.Length; i += 4) // Iterate over each pixel (BGRA)
-            {
-                // Invert Red, Green, and Blue channels
-                pixelData[i] = (byte)(255 - pixelData[i]);     // Blue
-                pixelData[i + 1] = (byte)(255 - pixelData[i + 1]); // Green
-                pixelData[i + 2] = (byte)(255 - pixelData[i + 2]); // Red
-            }
-
-            // Create a new bitmap with modified pixels
-            WriteableBitmap negativeBitmap = new WriteableBitmap(width, height, bitmap.DpiX, bitmap.DpiY, bitmap.Format, bitmap.Palette);
-            negativeBitmap.WritePixels(new Int32Rect(0, 0, width, height), pixelData, stride, 0);
-
-            return negativeBitmap;
-        }
-
-        private BitmapSource ApplyVignetteFilter(WriteableBitmap bitmap)
-        {
-            int width = bitmap.PixelWidth;
-            int height = bitmap.PixelHeight;
-            int stride = width * 4; // 4 bytes per pixel (BGRA)
-
-            byte[] pixelData = new byte[height * stride];
-            bitmap.CopyPixels(pixelData, stride, 0);
-
+            // Get the center of the image
             double centerX = width / 2.0;
             double centerY = height / 2.0;
-            double maxDistance = Math.Sqrt(centerX * centerX + centerY * centerY); // Maximum distance from center
+
+            // Calculate maximum distance from center (diagonal distance)
+            double maxDistance = Math.Sqrt(centerX * centerX + centerY * centerY);
+
+            // Clone the original frame to modify
+            Mat vignetteFrame = frame.Clone();
 
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    int pixelIndex = (y * stride) + (x * 4);
+                    // Get the pixel at (x, y)
+                    Vec3b pixel = frame.At<Vec3b>(y, x);
+
+                    // Calculate the distance from the center
                     double distance = Math.Sqrt(Math.Pow(x - centerX, 2) + Math.Pow(y - centerY, 2));
 
-                    // Calculate vignette strength (distance effect)
-                    double vignetteStrength = 1 - (distance / maxDistance); // Value between 0 and 1
+                    // Calculate vignette strength (value between 0 and 1)
+                    double vignetteStrength = 1 - (distance / maxDistance);
 
-                    // Apply vignette effect by reducing brightness based on distance
-                    for (int channel = 0; channel < 3; channel++) // Red, Green, Blue channels
+                    // Apply vignette effect (reduce brightness based on distance)
+                    // Multiply each color channel (Blue, Green, Red) by vignette strength
+                    for (int channel = 0; channel < 3; channel++) // BGR channels
                     {
-                        pixelData[pixelIndex + channel] = (byte)(pixelData[pixelIndex + channel] * vignetteStrength);
+                        byte newValue = (byte)(pixel[channel] * vignetteStrength);
+                        vignetteFrame.Set(y, x, new Vec3b(
+                            channel == 0 ? newValue : pixel[0], // Blue
+                            channel == 1 ? newValue : pixel[1], // Green
+                            channel == 2 ? newValue : pixel[2]  // Red
+                        ));
                     }
                 }
             }
 
-            // Create a new bitmap with the modified pixels
-            WriteableBitmap vignetteBitmap = new WriteableBitmap(width, height, bitmap.DpiX, bitmap.DpiY, bitmap.Format, bitmap.Palette);
-            vignetteBitmap.WritePixels(new Int32Rect(0, 0, width, height), pixelData, stride, 0);
-
-            return vignetteBitmap;
+            return vignetteFrame; // Return the modified image
         }
-
-        private BitmapSource ApplyRetroEffect(WriteableBitmap bitmap)
+        public Mat ApplyRetroEffectOpenCV(Mat frame)
         {
-            int width = bitmap.PixelWidth;
-            int height = bitmap.PixelHeight;
-            int stride = width * 4; // 4 bytes per pixel (BGRA)
+            int width = frame.Width;
+            int height = frame.Height;
 
-            byte[] pixelData = new byte[height * stride];
-            bitmap.CopyPixels(pixelData, stride, 0);
+            // Clone the original frame to modify it
+            Mat retroFrame = frame.Clone();
 
-            // Apply desaturation to make the image more faded (not full black and white)
+            // Apply desaturation (faded effect)
             double saturationFactor = 0.6; // A value between 0 (grayscale) and 1 (full color)
 
             // Apply a warm brownish tint (similar to old photos)
-            byte tintRed = 70, tintGreen = 50, tintBlue = 30; // Brownish tint
+            byte tintRed = 70, tintGreen = 50, tintBlue = 30; // Brownish tint (Blue, Green, Red)
 
-            for (int i = 0; i < pixelData.Length; i += 4)
+            for (int y = 0; y < height; y++)
             {
-                // Extract RGB values
-                byte red = pixelData[i + 2];
-                byte green = pixelData[i + 1];
-                byte blue = pixelData[i];
+                for (int x = 0; x < width; x++)
+                {
+                    // Get the pixel at (x, y)
+                    Vec3b pixel = frame.At<Vec3b>(y, x);
 
-                // Desaturate the color by calculating the average and blending with the original color
-                byte gray = (byte)((red + green + blue) / 3);
+                    // Extract RGB values (OpenCV stores them as BGR)
+                    byte blue = pixel[0];
+                    byte green = pixel[1];
+                    byte red = pixel[2];
 
-                red = (byte)(gray + (red - gray) * saturationFactor);
-                green = (byte)(gray + (green - gray) * saturationFactor);
-                blue = (byte)(gray + (blue - gray) * saturationFactor);
+                    // Desaturate the color by calculating the average
+                    byte gray = (byte)((red + green + blue) / 3);
 
-                // Apply the brownish tint to create a retro/vintage look
-                red = (byte)Math.Min(255, red + tintRed);
-                green = (byte)Math.Min(255, green + tintGreen);
-                blue = (byte)Math.Min(255, blue + tintBlue);
+                    // Blend with original color using saturation factor
+                    red = (byte)(gray + (red - gray) * saturationFactor);
+                    green = (byte)(gray + (green - gray) * saturationFactor);
+                    blue = (byte)(gray + (blue - gray) * saturationFactor);
 
-                // Apply the modified colors back to the pixel data
-                pixelData[i + 2] = red; // Red channel
-                pixelData[i + 1] = green; // Green channel
-                pixelData[i] = blue; // Blue channel
+                    // Apply the brownish tint
+                    red = (byte)Math.Min(255, red + tintRed);
+                    green = (byte)Math.Min(255, green + tintGreen);
+                    blue = (byte)Math.Min(255, blue + tintBlue);
+
+                    // Set the modified pixel back to the frame
+                    retroFrame.Set(y, x, new Vec3b(blue, green, red)); // BGR order
+                }
             }
 
-            // Create a new WriteableBitmap with the modified pixels
-            WriteableBitmap retroBitmap = new WriteableBitmap(width, height, bitmap.DpiX, bitmap.DpiY, bitmap.Format, bitmap.Palette);
-            retroBitmap.WritePixels(new Int32Rect(0, 0, width, height), pixelData, stride, 0);
-
-            return retroBitmap;
+            return retroFrame; // Return the retro-effected image
         }
-
-        public static WriteableBitmap ApplyWarpEffect(WriteableBitmap bitmap, double warpStrength)
+        public static Mat ApplyWarpEffectOpenCV(Mat frame, double warpStrength)
         {
-            int width = bitmap.PixelWidth;
-            int height = bitmap.PixelHeight;
-            int stride = width * 4; // 4 bytes per pixel (BGRA)
-            byte[] pixelData = new byte[height * stride];
-            bitmap.CopyPixels(pixelData, stride, 0);
+            int width = frame.Width;
+            int height = frame.Height;
 
-            WriteableBitmap warpedBitmap = new WriteableBitmap(width, height, bitmap.DpiX, bitmap.DpiY, bitmap.Format, bitmap.Palette);
-            byte[] warpedData = new byte[height * stride];
+            // Create an empty Mat for the warped image
+            Mat warpedFrame = new Mat(height, width, frame.Type());
 
+            // Get the center of the image
             int centerX = width / 2;
             int centerY = height / 2;
 
+            // Create maps for remapping
+            Mat mapX = new Mat(height, width, MatType.CV_32F);
+            Mat mapY = new Mat(height, width, MatType.CV_32F);
+
+            // Loop through each pixel and apply the warp effect
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
@@ -757,27 +631,23 @@ namespace ProcesamientoDeImágenes
                     double dx = x - centerX;
                     double dy = y - centerY;
                     double distance = Math.Sqrt(dx * dx + dy * dy);
-                    double factor = 1 + warpStrength * Math.Sin(distance / 30);
-                    int srcX = (int)(centerX + dx * factor);
-                    int srcY = (int)(centerY + dy * factor);
+                    double factor = 1 + warpStrength * Math.Sin(distance / 30); // Warp effect based on sine
 
-                    if (srcX >= 0 && srcX < width && srcY >= 0 && srcY < height)
-                    {
-                        int srcIndex = (srcY * stride) + (srcX * 4);
-                        int destIndex = (y * stride) + (x * 4);
+                    // Calculate the new positions based on the warp factor
+                    float newX = (float)(centerX + dx * factor);
+                    float newY = (float)(centerY + dy * factor);
 
-                        warpedData[destIndex] = pixelData[srcIndex];       // Blue
-                        warpedData[destIndex + 1] = pixelData[srcIndex + 1]; // Green
-                        warpedData[destIndex + 2] = pixelData[srcIndex + 2]; // Red
-                        warpedData[destIndex + 3] = pixelData[srcIndex + 3]; // Alpha
-                    }
+                    // Set the calculated values into the map matrices
+                    mapX.At<float>(y, x) = newX;
+                    mapY.At<float>(y, x) = newY;
                 }
             }
 
-            warpedBitmap.WritePixels(new Int32Rect(0, 0, width, height), warpedData, stride, 0);
-            return warpedBitmap;
-        }
+            // Apply the remap function to warp the image
+            Cv2.Remap(frame, warpedFrame, mapX, mapY, InterpolationFlags.Linear, BorderTypes.Constant, new Scalar(0));
 
+            return warpedFrame; // Return the warped image
+        }
 
 
     }

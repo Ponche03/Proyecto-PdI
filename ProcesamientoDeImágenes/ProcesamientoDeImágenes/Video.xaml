@@ -250,38 +250,34 @@
             </Button>
 
             <!-- Pause Video Icon -->
-            <Button Click="PauseVideo" Grid.Column="12" Grid.Row="20" Background="Transparent" BorderThickness="0">
+            <Button Click="PauseVideo" Grid.Column="14" Grid.Row="20" Background="Transparent" BorderThickness="0">
                 <Image Source="/Assets/Icons/pause_icon.png" Stretch="Fill"/>
             </Button>
 
             <!-- Play Video Icon -->
-            <Button Click="PauseVideo" Grid.Column="15" Grid.Row="20" Background="Transparent" BorderThickness="0">
+            <Button Click="PlayVideo" Grid.Column="16" Grid.Row="20" Background="Transparent" BorderThickness="0">
                 <Image Source="/Assets/Icons/play_icon.png" Stretch="Fill"/>
-            </Button>
-
-            <!-- Stop Video Icon -->
-            <Button Click="StopVideo" Grid.Column="18" Grid.Row="20" Background="Transparent" BorderThickness="0">
-                <Image Source="/Assets/Icons/stop_icon.png" Stretch="Fill"/>
             </Button>
 
 
             <!-- Histogram Red -->
             <Border Grid.Column="31" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="2" CornerRadius="10" 
-        BorderBrush="Beige" BorderThickness="2">
-                <Canvas Background="Transparent"/>
+    BorderBrush="Beige" BorderThickness="2">
+                <Canvas x:Name="HistogramRedCanvas" Background="Transparent"/>
             </Border>
 
             <!-- Histogram Green -->
             <Border Grid.Column="31" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="9" CornerRadius="10" 
-        BorderBrush="Beige" BorderThickness="2">
-                <Canvas Background="Transparent"/>
+    BorderBrush="Beige" BorderThickness="2">
+                <Canvas x:Name="HistogramGreenCanvas" Background="Transparent"/>
             </Border>
 
             <!-- Histogram Blue -->
             <Border Grid.Column="31" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="16" CornerRadius="10"
-        BorderBrush="Beige" BorderThickness="2">
-                <Canvas Background="Transparent"/>
+    BorderBrush="Beige" BorderThickness="2">
+                <Canvas x:Name="HistogramBlueCanvas" Background="Transparent"/>
             </Border>
+
 
 
             <!-- Filter Selection -->

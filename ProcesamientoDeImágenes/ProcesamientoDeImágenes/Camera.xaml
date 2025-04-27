@@ -244,12 +244,13 @@
             <Button Click="OnFaceDetectIconClick" Grid.Column="25" Grid.Row="7" Background="Transparent" BorderThickness="0">
                 <Image Source="/Assets/Icons/FaceDetectIcon.png" Stretch="Fill"/>
             </Button>
-
+            
             <Border Grid.Column="4" Grid.ColumnSpan="20" Grid.RowSpan="14" Grid.Row="5" 
         BorderBrush="Black" BorderThickness="2">
-                <Image x:Name="CameraDisplay" Stretch="Uniform"/>
+                <Image x:Name="CameraDisplay" Stretch="Uniform" RenderTransformOrigin="0.5,0.5"/>
             </Border>
-            
+
+
             <!-- Camera Input (Filters) -->
             <Border Grid.Column="4" Grid.ColumnSpan="20" Grid.RowSpan="14" Grid.Row="5" BorderBrush="Black" BorderThickness="2">
                 <Image x:Name="FilteredImage" Stretch="Fill" >
@@ -268,19 +269,19 @@
             <!-- Histogram Red -->
             <Border Grid.Column="31" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="2" CornerRadius="10"
 BorderBrush="Beige" BorderThickness="2">
-                <Canvas Background="Transparent"/>
+                <Canvas Background="Transparent" x:Name="HistogramRedCanvas"/>
             </Border>
 
             <!-- Histogram Green -->
             <Border Grid.Column="31" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="9" CornerRadius="10"
 BorderBrush="Beige" BorderThickness="2">
-                <Canvas Background="Transparent"/>
+                <Canvas Background="Transparent" x:Name="HistogramGreenCanvas"/>
             </Border>
 
             <!-- Histogram Blue -->
             <Border Grid.Column="31" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="16" CornerRadius="10"
 BorderBrush="Beige" BorderThickness="2">
-                <Canvas Background="Transparent"/>
+                <Canvas Background="Transparent" x:Name="HistogramBlueCanvas"/>
             </Border>
 
 

@@ -272,42 +272,42 @@ namespace ProcesamientoDeImágenes
         }
         private void DrawHistogram(Canvas canvas, int[] histogram)
         {
-            // Ensure canvas size is valid
             double canvasWidth = canvas.ActualWidth;
             double canvasHeight = canvas.ActualHeight;
 
             if (canvasWidth == 0 || canvasHeight == 0)
-            {
-                return; // Exit if canvas size is invalid or zero
-            }
+                return;
 
-            double maxHeight = canvasHeight;
-
-            // Clear any previous drawings
+            // Clear previous drawings
             canvas.Children.Clear();
 
             int maxValue = histogram.Max();
-            if (maxValue == 0) return;  // No data to draw
+            if (maxValue == 0)
+                return;
 
-            // Scale the histogram values
-            for (int i = 0; i < 256; i++)
+            int histSize = 256;
+            double binWidth = canvasWidth / histSize;
+            double maxHeight = canvasHeight;
+
+            // Create a smooth Polyline
+            Polyline polyline = new Polyline
             {
-                double barHeight = (histogram[i] / (double)maxValue) * maxHeight;
+                Stroke = GetColorForHistogram(canvas, 0), // Pick Red, Green or Blue based on canvas
+                StrokeThickness = 2,
+                StrokeLineJoin = PenLineJoin.Round,
+                SnapsToDevicePixels = true,
+            };
 
-                // Create and position a rectangle for each value in the histogram
-                var bar = new System.Windows.Shapes.Rectangle
-                {
-                    Width = canvasWidth / 256, // 256 bins for histogram
-                    Height = barHeight,
-                    Fill = GetColorForHistogram(canvas, i),
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Bottom,
-                    Margin = new Thickness(i * (canvasWidth / 256), 0, 0, 0)
-                };
-
-                canvas.Children.Add(bar);
+            for (int i = 0; i < histSize; i++)
+            {
+                double x = i * binWidth;
+                double y = maxHeight - ((histogram[i] / (double)maxValue) * maxHeight);
+                polyline.Points.Add(new System.Windows.Point(x, y));
             }
+
+            canvas.Children.Add(polyline);
         }
+
         private Brush GetColorForHistogram(Canvas canvas, int index)
         {
             if (canvas == RedHistogram)
@@ -318,6 +318,7 @@ namespace ProcesamientoDeImágenes
                 return Brushes.Blue;
             return Brushes.Gray;
         }
+
         private Color GetPixelColor(WriteableBitmap bitmap, int x, int y)
         {
             // Get the stride (width * 4 bytes per pixel)

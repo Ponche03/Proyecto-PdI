@@ -29,6 +29,8 @@ namespace ProcesamientoDeImágenes
         private CancellationTokenSource cts;
 
         private string selectedFilter = "None";
+        private bool isPaused = false;
+
 
         public Video()
         {
@@ -62,6 +64,7 @@ namespace ProcesamientoDeImágenes
         }
 
 
+      
         private async Task PlayVideoAsync(CancellationToken token)
         {
             var frame = new Mat();
@@ -69,6 +72,12 @@ namespace ProcesamientoDeImágenes
             {
                 while (!token.IsCancellationRequested && capture.IsOpened())
                 {
+                    if (isPaused)
+                    {
+                        await Task.Delay(100); 
+                        continue;
+                    }
+
                     if (!capture.Read(frame) || frame.Empty())
                         break;
 
@@ -77,7 +86,11 @@ namespace ProcesamientoDeImágenes
                     BitmapSource bitmap = BitmapSourceConverter.ToBitmapSource(processedFrame);
                     bitmap.Freeze();
 
-                    Dispatcher.Invoke(() => FilteredImage.Source = bitmap);
+                    Dispatcher.Invoke(() =>
+                    {
+                        FilteredImage.Source = bitmap;
+                        DrawHistograms(processedFrame);
+                    });
 
                     await Task.Delay((int)(1000 / capture.Fps));
 
@@ -94,14 +107,88 @@ namespace ProcesamientoDeImágenes
 
 
 
+        private void DrawHistograms(Mat frame)
+        {
+            if (frame.Empty())
+                return;
+
+            // Separate the frame into B, G, R channels
+            Mat[] bgr = Cv2.Split(frame);
+
+            int histSize = 256;
+            Rangef histRange = new Rangef(0, 256);
+
+            // Calculate histograms for each channel
+            Mat bHist = new Mat();
+            Mat gHist = new Mat();
+            Mat rHist = new Mat();
+
+            Cv2.CalcHist(new Mat[] { bgr[0] }, new int[] { 0 }, null, bHist, 1, new int[] { histSize }, new Rangef[] { histRange });
+            Cv2.CalcHist(new Mat[] { bgr[1] }, new int[] { 0 }, null, gHist, 1, new int[] { histSize }, new Rangef[] { histRange });
+            Cv2.CalcHist(new Mat[] { bgr[2] }, new int[] { 0 }, null, rHist, 1, new int[] { histSize }, new Rangef[] { histRange });
+
+            // Normalize histograms to fit Canvas height
+            int canvasHeight = 100; // Adjust based on your Canvas size
+            Cv2.Normalize(bHist, bHist, 0, canvasHeight, NormTypes.MinMax);
+            Cv2.Normalize(gHist, gHist, 0, canvasHeight, NormTypes.MinMax);
+            Cv2.Normalize(rHist, rHist, 0, canvasHeight, NormTypes.MinMax);
+
+            // Clear previous drawings
+            HistogramRedCanvas.Children.Clear();
+            HistogramGreenCanvas.Children.Clear();
+            HistogramBlueCanvas.Children.Clear();
+
+            // Draw histograms
+            DrawHistogramOnCanvas(HistogramRedCanvas, rHist, Brushes.Red);
+            DrawHistogramOnCanvas(HistogramGreenCanvas, gHist, Brushes.Green);
+            DrawHistogramOnCanvas(HistogramBlueCanvas, bHist, Brushes.Blue);
+
+            // Dispose
+            foreach (var mat in bgr)
+                mat.Dispose();
+            bHist.Dispose();
+            gHist.Dispose();
+            rHist.Dispose();
+        }
+
+        private void DrawHistogramOnCanvas(Canvas canvas, Mat hist, Brush color)
+        {
+            if (canvas.ActualWidth == 0 || canvas.ActualHeight == 0)
+                return;
+
+            int histSize = 256;
+            double binWidth = canvas.ActualWidth / histSize;
+            double canvasHeight = canvas.ActualHeight;
+
+            Polyline polyline = new Polyline
+            {
+                Stroke = color,
+                StrokeThickness = 2,
+                StrokeLineJoin = PenLineJoin.Round,
+                SnapsToDevicePixels = true,
+            };
+
+            for (int i = 0; i < histSize; i++)
+            {
+                double x = i * binWidth;
+                double y = canvasHeight - hist.At<float>(i); 
+                
+                polyline.Points.Add(new System.Windows.Point(x, y));
+            }
+
+            canvas.Children.Add(polyline);
+        }
+
+
 
         private void PauseVideo(object sender, RoutedEventArgs e)
         {
-            cts?.Cancel();
+            isPaused = true;
         }
-        private void StopVideo(object sender, RoutedEventArgs e)
+
+        private void PlayVideo(object sender, RoutedEventArgs e)
         {
-           
+            isPaused = false;
         }
 
 
@@ -112,7 +199,6 @@ namespace ProcesamientoDeImágenes
                 selectedFilter = button.Content.ToString();
             }
         }
-
         private Mat ApplySelectedFilter(Mat frame)
         {
             Mat filtered = new Mat();
@@ -196,15 +282,20 @@ namespace ProcesamientoDeImágenes
         {
             Mat output = new Mat();
 
-            // Manually build the kernel
-            Mat kernel = new Mat(3, 3, MatType.CV_32F, Scalar.All(0));
-            kernel.Set(0, 1, -1);
-            kernel.Set(1, 0, -1);
-            kernel.Set(1, 1, 5);
-            kernel.Set(1, 2, -1);
-            kernel.Set(2, 1, -1);
+            Mat kernel = new Mat(3, 3, MatType.CV_32F);
 
-            // Apply filter
+            // Set the kernel values manually (stronger sharpness)
+            kernel.Set(0, 0, -1f);
+            kernel.Set(0, 1, -1f);
+            kernel.Set(0, 2, -1f);
+            kernel.Set(1, 0, -1f);
+            kernel.Set(1, 1, 9f);
+            kernel.Set(1, 2, -1f);
+            kernel.Set(2, 0, -1f);
+            kernel.Set(2, 1, -1f);
+            kernel.Set(2, 2, -1f);
+
+            // Apply the filter
             Cv2.Filter2D(input, output, input.Type(), kernel);
 
             return output;
