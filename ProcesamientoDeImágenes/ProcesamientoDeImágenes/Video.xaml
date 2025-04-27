@@ -234,7 +234,7 @@
             </Border>
 
             <Border Grid.Column="2" Grid.ColumnSpan="27" Grid.RowSpan="17" Grid.Row="2" BorderBrush="Black" BorderThickness="2">
-                <Image x:Name="FilteredImage" Stretch="Fill" >
+                <Image x:Name="FilteredImage" Stretch="Uniform" >
                 </Image>
             </Border>
 
@@ -255,7 +255,7 @@
             </Button>
 
             <!-- Play Video Icon -->
-            <Button Click="PlayVideo" Grid.Column="15" Grid.Row="20" Background="Transparent" BorderThickness="0">
+            <Button Click="PauseVideo" Grid.Column="15" Grid.Row="20" Background="Transparent" BorderThickness="0">
                 <Image Source="/Assets/Icons/play_icon.png" Stretch="Fill"/>
             </Button>
 
