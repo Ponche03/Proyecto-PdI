@@ -29,14 +29,18 @@ namespace ProcesamientoDeImágenes
     {
         private string selectedFilter = "None";
 
+        private CascadeClassifier faceCascade;
+
         private FilterInfoCollection videoDevices;
         private VideoCaptureDevice videoSource;
 
         private bool isFlipped = false;
+        private bool isFaceDetectionActive = false; 
 
         public Camera()
         {
             InitializeComponent();
+            LoadFaceCascade();
             LoadCameras();
         }
 
@@ -50,7 +54,14 @@ namespace ProcesamientoDeImágenes
                 CameraComboBox.SelectedIndex = 0;
             }
         }
+        private void LoadFaceCascade()
+        {
+           
+            string cascadePath = "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeImágenes\\ProcesamientoDeImágenes\\Assets\\haarcascade\\haarcascade_frontalface_default.xml"; 
 
+            // Cargar el clasificador Haar para detección de caras
+            faceCascade = new CascadeClassifier(cascadePath);
+        }
         private void CameraComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             StartCamera(CameraComboBox.SelectedIndex);
@@ -79,23 +90,33 @@ namespace ProcesamientoDeImágenes
             {
                 Dispatcher.Invoke(() =>
                 {
-                    // Convert the frame (Bitmap) to OpenCvSharp Mat
+                    // Convert the Bitmap frame to OpenCV Mat
                     Mat frame = OpenCvSharp.Extensions.BitmapConverter.ToMat(eventArgs.Frame);
 
-                    // Apply the selected filter
+                    // Apply the selected filter to the frame
                     Mat filteredFrame = ApplySelectedFilter(frame);
 
-                    // Convert the filtered Mat to System.Drawing.Bitmap
+                    // If face detection is active, detect faces and draw them on the frame
+                    if (isFaceDetectionActive)
+                    {
+                        DetectAndDrawFaces(filteredFrame);
+                    }
+
+                    // Convert the filtered Mat back to System.Drawing.Bitmap
                     System.Drawing.Bitmap bitmap = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(filteredFrame);
 
-                    // Convert the System.Drawing.Bitmap to BitmapSource for WPF
+                    // Convert System.Drawing.Bitmap to BitmapSource for WPF
                     BitmapSource bitmapSource = ConvertToBitmapSource(bitmap);
 
-                    // Display the filtered frame in the CameraDisplay
+                    // Display the processed frame (with filter and face detection) in the CameraDisplay
                     CameraDisplay.Source = bitmapSource;
 
                     // Optionally, draw histograms for the filtered frame
                     DrawHistograms(filteredFrame);
+
+                    // Clean up the Mat to free memory
+                    frame.Dispose();
+                    filteredFrame.Dispose();
                 });
             }
             catch (Exception ex)
@@ -121,7 +142,22 @@ namespace ProcesamientoDeImágenes
             }
         }
 
+        private void DetectAndDrawFaces(Mat frame)
+        {
+            // Convertir a escala de grises para la detección de caras
+            Mat gray = new Mat();
+            Cv2.CvtColor(frame, gray, ColorConversionCodes.BGR2GRAY);
 
+            // Detectar caras
+            var faces = faceCascade.DetectMultiScale(gray, 1.1, 3, HaarDetectionTypes.ScaleImage, new OpenCvSharp.Size(30, 30));
+
+            // Dibujar rectángulos alrededor de las caras detectadas
+            foreach (var face in faces)
+            {
+                // Dibujar un rectángulo verde alrededor de la cara
+                Cv2.Rectangle(frame, face, new Scalar(0, 255, 0), 2); // Color verde con grosor de 2 píxeles
+            }
+        }
 
         private void DrawHistograms(Mat frame)
         {
@@ -195,35 +231,6 @@ namespace ProcesamientoDeImágenes
             canvas.Children.Add(polyline);
         }
 
-
-
-        private BitmapImage ConvertBitmap(Bitmap bitmap)
-        {
-
-            BitmapImage bitmapImage = new BitmapImage();
-            using (var memory = new System.IO.MemoryStream())
-            {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
-                memory.Position = 0;
-
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-            }
-
-            return bitmapImage;
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (videoSource != null && videoSource.IsRunning)
-            {
-                videoSource.SignalToStop();
-                videoSource.WaitForStop();
-                videoSource.NewFrame -= NewFrameReceived;
-            }
-        }
 
         private void GoToVideoPage(object sender, RoutedEventArgs e)
         {
@@ -302,7 +309,6 @@ namespace ProcesamientoDeImágenes
                 SaveBitmapImage(bitmapImage);
             }
         }
-
         private void SaveBitmapImage(BitmapImage bitmapImage)
         {
             var encoder = new PngBitmapEncoder();
@@ -325,7 +331,7 @@ namespace ProcesamientoDeImágenes
         }
         private void OnFaceDetectIconClick(object sender, RoutedEventArgs e)
         {
-            // Handle face detection functionality here
+            isFaceDetectionActive = !isFaceDetectionActive; 
         }
 
 
