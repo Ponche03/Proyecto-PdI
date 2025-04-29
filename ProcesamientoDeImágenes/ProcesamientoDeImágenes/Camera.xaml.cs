@@ -22,12 +22,17 @@ using OpenCvSharp;
 using System.IO;
 
 
+
 namespace ProcesamientoDeImágenes
 {
 
     public partial class Camera : System.Windows.Window
     {
         private string selectedFilter = "None";
+        private List<OpenCvSharp.Rect> lastDetectedFaces = new List<OpenCvSharp.Rect>();
+        private int frameCounter = 0;
+
+        private OpenCvSharp.Scalar selectedColor = new OpenCvSharp.Scalar(0, 0, 0);
 
         private CascadeClassifier faceCascade;
 
@@ -90,31 +95,33 @@ namespace ProcesamientoDeImágenes
             {
                 Dispatcher.Invoke(() =>
                 {
-                    // Convert the Bitmap frame to OpenCV Mat
                     Mat frame = OpenCvSharp.Extensions.BitmapConverter.ToMat(eventArgs.Frame);
 
-                    // Apply the selected filter to the frame
-                    Mat filteredFrame = ApplySelectedFilter(frame);
-
-                    // If face detection is active, detect faces and draw them on the frame
+                    frameCounter++;
                     if (isFaceDetectionActive)
                     {
-                        DetectAndDrawFaces(filteredFrame);
+                        if (frameCounter % 5 == 0) // Only detect every 5 frames
+                        {
+                            lastDetectedFaces = DetectFaces(frame);
+                        }
                     }
 
-                    // Convert the filtered Mat back to System.Drawing.Bitmap
-                    System.Drawing.Bitmap bitmap = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(filteredFrame);
+                    // Apply selected filter first
+                    Mat filteredFrame = ApplySelectedFilter(frame);
 
-                    // Convert System.Drawing.Bitmap to BitmapSource for WPF
-                    BitmapSource bitmapSource = ConvertToBitmapSource(bitmap);
+                    // Now draw faces on the filtered frame
+                    if (isFaceDetectionActive)
+                    {
+                        DrawDetectedFaces(filteredFrame, lastDetectedFaces);
+                    }
 
-                    // Display the processed frame (with filter and face detection) in the CameraDisplay
+                    // Convert and display
+                    BitmapSource bitmapSource = ConvertToBitmapSource(OpenCvSharp.Extensions.BitmapConverter.ToBitmap(filteredFrame));
                     CameraDisplay.Source = bitmapSource;
 
-                    // Optionally, draw histograms for the filtered frame
+                    // Draw histograms
                     DrawHistograms(filteredFrame);
 
-                    // Clean up the Mat to free memory
                     frame.Dispose();
                     filteredFrame.Dispose();
                 });
@@ -124,6 +131,7 @@ namespace ProcesamientoDeImágenes
                 Console.WriteLine(ex.Message);
             }
         }
+
 
         private BitmapSource ConvertToBitmapSource(System.Drawing.Bitmap bitmap)
         {
@@ -142,20 +150,51 @@ namespace ProcesamientoDeImágenes
             }
         }
 
-        private void DetectAndDrawFaces(Mat frame)
+        private List<OpenCvSharp.Rect> DetectFaces(Mat frame)
         {
-            // Convertir a escala de grises para la detección de caras
+            List<OpenCvSharp.Rect> facesList = new List<OpenCvSharp.Rect>();
+
+            if (faceCascade == null)
+                return facesList;
+
+            double scaleFactor = 0.5;
+            Mat smallFrame = new Mat();
+            Cv2.Resize(frame, smallFrame, new OpenCvSharp.Size(), scaleFactor, scaleFactor);
+
             Mat gray = new Mat();
-            Cv2.CvtColor(frame, gray, ColorConversionCodes.BGR2GRAY);
+            Cv2.CvtColor(smallFrame, gray, ColorConversionCodes.BGR2GRAY);
+            Cv2.EqualizeHist(gray, gray);
 
-            // Detectar caras
-            var faces = faceCascade.DetectMultiScale(gray, 1.1, 3, HaarDetectionTypes.ScaleImage, new OpenCvSharp.Size(30, 30));
+            var faces = faceCascade.DetectMultiScale(
+                gray,
+                1.1,
+                4,
+                HaarDetectionTypes.ScaleImage,
+                new OpenCvSharp.Size(50, 50)
+            );
 
-            // Dibujar rectángulos alrededor de las caras detectadas
             foreach (var face in faces)
             {
-                // Dibujar un rectángulo verde alrededor de la cara
-                Cv2.Rectangle(frame, face, new Scalar(0, 255, 0), 2); // Color verde con grosor de 2 píxeles
+                // Rescale to original size
+                facesList.Add(new OpenCvSharp.Rect(
+                    (int)(face.X / scaleFactor),
+                    (int)(face.Y / scaleFactor),
+                    (int)(face.Width / scaleFactor),
+                    (int)(face.Height / scaleFactor)
+                ));
+            }
+
+            smallFrame.Dispose();
+            gray.Dispose();
+
+            return facesList;
+        }
+
+        private void DrawDetectedFaces(Mat frame, List<OpenCvSharp.Rect> faces)
+        {
+            foreach (var face in faces)
+            {
+                Cv2.Rectangle(frame, face, Scalar.Red, 2);
             }
         }
 
@@ -400,6 +439,10 @@ namespace ProcesamientoDeImágenes
                     filtered = ApplyWarpEffectOpenCV(frame, 0.3);
                     break;
 
+                case "Color Mask":
+                    filtered = ApplyColorMask(frame, selectedColor);
+                    break;
+
                 default:
                     filtered = frame.Clone();
                     break;
@@ -408,7 +451,14 @@ namespace ProcesamientoDeImágenes
             return filtered;
         }
 
-
+        private void OnColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
+        {
+            if (e.NewValue.HasValue)
+            {
+                var color = e.NewValue.Value;
+                selectedColor = new OpenCvSharp.Scalar(color.B, color.G, color.R); 
+            }
+        }
 
         private Mat ApplyMosaicFilterOpenCV(Mat input, int blockSize)
         {
@@ -654,7 +704,33 @@ namespace ProcesamientoDeImágenes
 
             return warpedFrame; // Return the warped image
         }
+        private Mat ApplyColorMask(Mat frame, Scalar selectedColor)
+        {
+            Mat mask = new Mat();
+            Mat result = new Mat();
 
+            // Define a range around the selected color
+            int threshold = 40; // you can adjust how sensitive it is
+
+            Scalar lower = new Scalar(
+                Math.Max(selectedColor.Val0 - threshold, 0),
+                Math.Max(selectedColor.Val1 - threshold, 0),
+                Math.Max(selectedColor.Val2 - threshold, 0));
+
+            Scalar upper = new Scalar(
+                Math.Min(selectedColor.Val0 + threshold, 255),
+                Math.Min(selectedColor.Val1 + threshold, 255),
+                Math.Min(selectedColor.Val2 + threshold, 255));
+
+            // Create a mask of pixels within the color range
+            Cv2.InRange(frame, lower, upper, mask);
+
+            // Apply the mask to the original frame
+            Cv2.BitwiseAnd(frame, frame, result, mask);
+
+            mask.Dispose();
+            return result;
+        }
 
     }
 }
