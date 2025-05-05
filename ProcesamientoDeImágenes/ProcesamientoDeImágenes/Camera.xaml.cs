@@ -39,6 +39,8 @@ namespace ProcesamientoDeImágenes
         private FilterInfoCollection videoDevices;
         private VideoCaptureDevice videoSource;
 
+        private System.Drawing.Bitmap lastDisplayedBitmap;
+
         private bool isFlipped = false;
         private bool isFaceDetectionActive = false; 
 
@@ -98,28 +100,25 @@ namespace ProcesamientoDeImágenes
                     Mat frame = OpenCvSharp.Extensions.BitmapConverter.ToMat(eventArgs.Frame);
 
                     frameCounter++;
-                    if (isFaceDetectionActive)
+                    if (isFaceDetectionActive && frameCounter % 5 == 0)
                     {
-                        if (frameCounter % 5 == 0) // Only detect every 5 frames
-                        {
-                            lastDetectedFaces = DetectFaces(frame);
-                        }
+                        lastDetectedFaces = DetectFaces(frame);
                     }
 
-                    // Apply selected filter first
                     Mat filteredFrame = ApplySelectedFilter(frame);
 
-                    // Now draw faces on the filtered frame
                     if (isFaceDetectionActive)
                     {
                         DrawDetectedFaces(filteredFrame, lastDetectedFaces);
                     }
 
-                    // Convert and display
-                    BitmapSource bitmapSource = ConvertToBitmapSource(OpenCvSharp.Extensions.BitmapConverter.ToBitmap(filteredFrame));
+                    // Convert to Bitmap only once
+                    lastDisplayedBitmap?.Dispose();
+                    lastDisplayedBitmap = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(filteredFrame);
+
+                    BitmapSource bitmapSource = ConvertToBitmapSource(lastDisplayedBitmap);
                     CameraDisplay.Source = bitmapSource;
 
-                    // Draw histograms
                     DrawHistograms(filteredFrame);
 
                     frame.Dispose();
@@ -129,6 +128,31 @@ namespace ProcesamientoDeImágenes
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+        }
+
+        private void CameraDisplay_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (lastDisplayedBitmap == null) return;
+
+            // Get click position relative to the image
+            var position = e.GetPosition(CameraDisplay);
+
+            // Scale position to bitmap size
+            double xScale = lastDisplayedBitmap.Width / CameraDisplay.ActualWidth;
+            double yScale = lastDisplayedBitmap.Height / CameraDisplay.ActualHeight;
+
+            int x = (int)(position.X * xScale);
+            int y = (int)(position.Y * yScale);
+
+            // Bounds check
+            if (x >= 0 && x < lastDisplayedBitmap.Width && y >= 0 && y < lastDisplayedBitmap.Height)
+            {
+                var color = lastDisplayedBitmap.GetPixel(x, y);
+                string hex = $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+                HexColorTextBox.Text = hex;
+                HexColorTextBox.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(color.R, color.G, color.B));
+
             }
         }
 
