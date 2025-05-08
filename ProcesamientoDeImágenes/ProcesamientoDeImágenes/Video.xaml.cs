@@ -19,9 +19,7 @@ using System.Windows.Shapes;
 
 namespace ProcesamientoDeImágenes
 {
-    /// <summary>
-    /// Interaction logic for Video.xaml
-    /// </summary>
+   
     public partial class Video : System.Windows.Window
     {
 
@@ -39,7 +37,7 @@ namespace ProcesamientoDeImágenes
 
         private void OnDownloadVideoIconClick(object sender, RoutedEventArgs e)
         {
-            // Handle video download functionality here
+            
         }
         private async void OnUploadVideoIconClick(object sender, RoutedEventArgs e)
         {
@@ -97,7 +95,10 @@ namespace ProcesamientoDeImágenes
                     processedFrame.Dispose();
                 }
 
-                capture.Release();
+                if (capture != null)
+                {
+                    capture.Release();
+                }
             }
             finally
             {
@@ -112,13 +113,12 @@ namespace ProcesamientoDeImágenes
             if (frame.Empty())
                 return;
 
-            // Separate the frame into B, G, R channels
             Mat[] bgr = Cv2.Split(frame);
 
             int histSize = 256;
             Rangef histRange = new Rangef(0, 256);
 
-            // Calculate histograms for each channel
+            
             Mat bHist = new Mat();
             Mat gHist = new Mat();
             Mat rHist = new Mat();
@@ -127,23 +127,23 @@ namespace ProcesamientoDeImágenes
             Cv2.CalcHist(new Mat[] { bgr[1] }, new int[] { 0 }, null, gHist, 1, new int[] { histSize }, new Rangef[] { histRange });
             Cv2.CalcHist(new Mat[] { bgr[2] }, new int[] { 0 }, null, rHist, 1, new int[] { histSize }, new Rangef[] { histRange });
 
-            // Normalize histograms to fit Canvas height
-            int canvasHeight = 100; // Adjust based on your Canvas size
+            
+            int canvasHeight = 100;
             Cv2.Normalize(bHist, bHist, 0, canvasHeight, NormTypes.MinMax);
             Cv2.Normalize(gHist, gHist, 0, canvasHeight, NormTypes.MinMax);
             Cv2.Normalize(rHist, rHist, 0, canvasHeight, NormTypes.MinMax);
 
-            // Clear previous drawings
+           
             HistogramRedCanvas.Children.Clear();
             HistogramGreenCanvas.Children.Clear();
             HistogramBlueCanvas.Children.Clear();
 
-            // Draw histograms
+            
             DrawHistogramOnCanvas(HistogramRedCanvas, rHist, Brushes.Red);
             DrawHistogramOnCanvas(HistogramGreenCanvas, gHist, Brushes.Green);
             DrawHistogramOnCanvas(HistogramBlueCanvas, bHist, Brushes.Blue);
 
-            // Dispose
+          
             foreach (var mat in bgr)
                 mat.Dispose();
             bHist.Dispose();
@@ -190,6 +190,30 @@ namespace ProcesamientoDeImágenes
         {
             isPaused = false;
         }
+
+        private void StopVideo(object sender, RoutedEventArgs e)
+        {
+            isPaused = false;
+            if (cts != null && !cts.IsCancellationRequested)
+            {
+                cts.Cancel();
+                cts.Dispose();
+                cts = null;
+            }
+
+            if (capture != null && capture.IsOpened())
+            {
+                capture.Release();
+                capture.Dispose();
+                capture = null;
+            }
+
+            FilteredImage.Source = null;
+            HistogramRedCanvas.Children.Clear();
+            HistogramGreenCanvas.Children.Clear();
+            HistogramBlueCanvas.Children.Clear();
+        }
+
 
 
         private void OnFilterButtonClick(object sender, RoutedEventArgs e)
@@ -304,15 +328,20 @@ namespace ProcesamientoDeImágenes
         {
             Mat gray = new Mat();
             Mat binary = new Mat();
+            Mat binaryBgr = new Mat();
 
-            // Convert input to grayscale first
             Cv2.CvtColor(input, gray, ColorConversionCodes.BGR2GRAY);
 
-            // Apply threshold
             Cv2.Threshold(gray, binary, threshold, 255, ThresholdTypes.Binary);
 
-            return binary;
+            Cv2.CvtColor(binary, binaryBgr, ColorConversionCodes.GRAY2BGR);
+
+            gray.Dispose();
+            binary.Dispose();
+
+            return binaryBgr;
         }
+
         private Mat ApplyHueSaturationFilterOpenCV(Mat input, double hueShiftDegrees, double saturationFactor)
         {
             Mat hsv = new Mat();

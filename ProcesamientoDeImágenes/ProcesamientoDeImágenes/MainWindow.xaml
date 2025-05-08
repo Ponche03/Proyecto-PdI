@@ -230,16 +230,16 @@
 
 
             <!-- Upload Image Icon -->
-            <Button Click="OnUploadImageIconClick" Grid.Column="4" Grid.Row="22" Background="Transparent" BorderThickness="0">
+            <Button Click="OnUploadImageIconClick" Grid.Column="3" Grid.Row="22" Background="Transparent" BorderThickness="0">
                 <Image Source="/Assets/Icons/UploadImageIcon.png" Stretch="Fill"/>
             </Button>
 
             <!-- Download Image Icon -->
-            <Button Click="OnDownloadImageIconClick" Grid.Column="12" Grid.Row="22" Background="Transparent" BorderThickness="0">
+            <Button Click="OnDownloadImageIconClick" Grid.Column="18" Grid.Row="22" Background="Transparent" BorderThickness="0">
                 <Image Source="/Assets/Icons/DownloadImageIcon.png" Stretch="Fill"/>
             </Button>
 
-            <Border Grid.Column="3" Grid.ColumnSpan="11" Grid.RowSpan="18" Grid.Row="3" BorderBrush="#FF0F0F26" BorderThickness="2" CornerRadius="10">
+            <Border Grid.Column="2" Grid.ColumnSpan="18" Grid.RowSpan="18" Grid.Row="3" BorderBrush="#FF0F0F26" BorderThickness="2" CornerRadius="10">
                 <ScrollViewer x:Name="ImageScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <Image x:Name="UploadedImage" Stretch="None" 
                MouseLeftButtonDown="OnImageMouseDown" 
@@ -258,27 +258,34 @@
             </Border>
 
 
+            <!-- Histogram RGB -->
+            <Border Grid.Column="22" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="3" CornerRadius="10"
+        BorderBrush="Beige" BorderThickness="2">
+                <Canvas Background="Transparent" x:Name="RGBHistogram"/>
+            </Border>
+
             <!-- Histogram Red -->
-            <Border Grid.Column="18" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="3" CornerRadius="10"
+            <Border Grid.Column="30" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="3" CornerRadius="10"
         BorderBrush="Beige" BorderThickness="2">
                 <Canvas Background="Transparent" x:Name="RedHistogram"/>
             </Border>
 
             <!-- Histogram Green -->
-            <Border Grid.Column="29" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="3" CornerRadius="10"
+            <Border Grid.Column="22" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="11" CornerRadius="10"
         BorderBrush="Beige" BorderThickness="2">
                 <Canvas Background="Transparent" x:Name="GreenHistogram"/>
             </Border>
 
             <!-- Histogram Blue -->
-            <Border Grid.Column="23" Grid.ColumnSpan="7" Grid.RowSpan="8" Grid.Row="10" CornerRadius="10"
-        BorderBrush="Beige" BorderThickness="2" Margin="18,30,12,30">
+            <Border Grid.Column="30" Grid.ColumnSpan="6" Grid.RowSpan="6" Grid.Row="11" CornerRadius="10"
+        BorderBrush="Beige" BorderThickness="2">
                 <Canvas Background="Transparent" x:Name="BlueHistogram"/>
             </Border>
 
 
+            
             <!-- Filter Selection -->
-            <Border Grid.Column="18" Grid.ColumnSpan="17" Grid.RowSpan="2" Grid.Row="19" 
+            <Border Grid.Column="22" Grid.ColumnSpan="14" Grid.RowSpan="2" Grid.Row="19" 
         BorderBrush="#FF0F0F26" BorderThickness="2" Padding="5" CornerRadius="10" RenderTransformOrigin="0.5,0.5">
                 <Border.RenderTransform>
                     <TransformGroup>

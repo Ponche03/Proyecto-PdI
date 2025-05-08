@@ -37,7 +37,7 @@ namespace ProcesamientoDeImágenes
 
         private void OnImageMouseDown(object sender, MouseButtonEventArgs e)
         {
-            // Allow dragging of the image even if the mouse is clicked inside the container
+          
             if (e.OriginalSource == UploadedImage || e.OriginalSource == ImageScrollViewer)
             {
                 isDragging = true;
@@ -253,7 +253,6 @@ namespace ProcesamientoDeImágenes
             int[] greenHistogram = new int[256];
             int[] blueHistogram = new int[256];
 
-            // Compute histograms for each channel
             for (int y = 0; y < bitmap.PixelHeight; y++)
             {
                 for (int x = 0; x < bitmap.PixelWidth; x++)
@@ -265,10 +264,11 @@ namespace ProcesamientoDeImágenes
                 }
             }
 
-            // Draw histograms for each channel
             DrawHistogram(RedHistogram, redHistogram);
             DrawHistogram(GreenHistogram, greenHistogram);
             DrawHistogram(BlueHistogram, blueHistogram);
+            DrawCombinedHistogram(RGBHistogram, redHistogram, greenHistogram, blueHistogram); 
+
         }
         private void DrawHistogram(Canvas canvas, int[] histogram)
         {
@@ -278,7 +278,6 @@ namespace ProcesamientoDeImágenes
             if (canvasWidth == 0 || canvasHeight == 0)
                 return;
 
-            // Clear previous drawings
             canvas.Children.Clear();
 
             int maxValue = histogram.Max();
@@ -289,10 +288,10 @@ namespace ProcesamientoDeImágenes
             double binWidth = canvasWidth / histSize;
             double maxHeight = canvasHeight;
 
-            // Create a smooth Polyline
+            
             Polyline polyline = new Polyline
             {
-                Stroke = GetColorForHistogram(canvas, 0), // Pick Red, Green or Blue based on canvas
+                Stroke = GetColorForHistogram(canvas, 0),
                 StrokeThickness = 2,
                 StrokeLineJoin = PenLineJoin.Round,
                 SnapsToDevicePixels = true,
@@ -301,13 +300,15 @@ namespace ProcesamientoDeImágenes
             for (int i = 0; i < histSize; i++)
             {
                 double x = i * binWidth;
-                double y = maxHeight - ((histogram[i] / (double)maxValue) * maxHeight);
+                double scaledValue = Math.Log(histogram[i] + 1);
+                double maxLog = Math.Log(maxValue + 1);
+                double y = maxHeight - ((scaledValue / maxLog) * maxHeight);
+
                 polyline.Points.Add(new System.Windows.Point(x, y));
             }
 
             canvas.Children.Add(polyline);
         }
-
         private Brush GetColorForHistogram(Canvas canvas, int index)
         {
             if (canvas == RedHistogram)
@@ -318,20 +319,16 @@ namespace ProcesamientoDeImágenes
                 return Brushes.Blue;
             return Brushes.Gray;
         }
-
         private Color GetPixelColor(WriteableBitmap bitmap, int x, int y)
         {
-            // Get the stride (width * 4 bytes per pixel)
+            
             int stride = bitmap.PixelWidth * 4;
 
-            // Create a byte array to hold the pixel data for the specific row
-            byte[] pixelData = new byte[4]; // 4 bytes per pixel (BGRA)
+            byte[] pixelData = new byte[4]; 
 
-            // Copy the pixels at (x, y) into the byte array
             bitmap.CopyPixels(new Int32Rect(x, y, 1, 1), pixelData, stride, 0);
 
-            // Return the color in BGRA format, we convert it to ARGB (A, R, G, B)
-            return Color.FromArgb(pixelData[3], pixelData[2], pixelData[1], pixelData[0]); // A, R, G, B
+            return Color.FromArgb(pixelData[3], pixelData[2], pixelData[1], pixelData[0]);
         }
         private void OnFilterButtonClick(object sender, RoutedEventArgs e)
         {
@@ -357,38 +354,49 @@ namespace ProcesamientoDeImágenes
                     {
                         case "None":
                             UploadedImage.Source = originalImage;
+                            UpdateHistogram(new WriteableBitmap(originalImage));
                             break;
                         case "Gaussian Blur":
                             UploadedImage.Source = ApplyGaussianBlur(writableBitmap, 10);
+                            UpdateHistogram(writableBitmap);
                             break;
                         case "Contrast Filter":
                             UploadedImage.Source = ApplyContrastFilter(writableBitmap, 50);
+                            UpdateHistogram(writableBitmap);
                             break;
                         case "Sharpness Filter":
                             UploadedImage.Source = ApplySharpnessFilter(writableBitmap);
+                            UpdateHistogram(writableBitmap);
                             break;
                         case "Threshold Filter":
                             UploadedImage.Source = ApplyThresholdFilter(writableBitmap, 128);
+                            UpdateHistogram(writableBitmap);
                             break;
                         case "Hue/Saturation Filter":
                             double hueShift = 30.0;
                             double saturationFactor = 1.5;
                             UploadedImage.Source = ApplyHueSaturationFilter(writableBitmap, hueShift, saturationFactor);
+                            UpdateHistogram(writableBitmap);
                             break;
                         case "Negative Filter":
                             UploadedImage.Source = ApplyNegativeFilter(writableBitmap);
+                            UpdateHistogram(writableBitmap);
                             break;
                         case "Vignette Filter":
                             UploadedImage.Source = ApplyVignetteFilter(writableBitmap);
+                            UpdateHistogram(writableBitmap);
                             break;
                         case "Mosaic Filter":
                             UploadedImage.Source = ApplyMosaicFilter(writableBitmap, 10);
+                            UpdateHistogram(writableBitmap);
                             break;
                         case "Retro Effect":
                             UploadedImage.Source = ApplyRetroEffect(writableBitmap);
+                            UpdateHistogram(writableBitmap);
                             break;
                         case "Warp Filter":
                             UploadedImage.Source = ApplyWarpEffect(writableBitmap, 0.5);
+                            UpdateHistogram(writableBitmap);
                             break;
                         default:
                             MessageBox.Show("Unknown filter selected.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -397,6 +405,54 @@ namespace ProcesamientoDeImágenes
                 }
             }
         }
+
+
+
+        private void DrawCombinedHistogram(Canvas canvas, int[] redHist, int[] greenHist, int[] blueHist)
+        {
+            double canvasWidth = canvas.ActualWidth;
+            double canvasHeight = canvas.ActualHeight;
+
+            if (canvasWidth == 0 || canvasHeight == 0)
+                return;
+
+            canvas.Children.Clear();
+
+            int histSize = 256;
+            double binWidth = canvasWidth / histSize;
+            double maxHeight = canvasHeight;
+
+            int maxValue = Math.Max(redHist.Max(), Math.Max(greenHist.Max(), blueHist.Max()));
+
+            DrawChannelPolyline(canvas, redHist, Brushes.Red, maxValue, binWidth, maxHeight);
+            DrawChannelPolyline(canvas, greenHist, Brushes.Green, maxValue, binWidth, maxHeight);
+            DrawChannelPolyline(canvas, blueHist, Brushes.Blue, maxValue, binWidth, maxHeight);
+        }
+
+        private void DrawChannelPolyline(Canvas canvas, int[] histogram, Brush brush, int maxValue, double binWidth, double maxHeight)
+        {
+            Polyline polyline = new Polyline
+            {
+                Stroke = brush,
+                StrokeThickness = 2,
+                StrokeLineJoin = PenLineJoin.Round,
+                SnapsToDevicePixels = true
+            };
+
+            for (int i = 0; i < histogram.Length; i++)
+            {
+                double x = i * binWidth;
+                double scaledValue = Math.Log(histogram[i] + 1);
+                double maxLog = Math.Log(maxValue + 1);
+                double y = maxHeight - ((scaledValue / maxLog) * maxHeight);
+
+                polyline.Points.Add(new System.Windows.Point(x, y));
+            }
+
+            canvas.Children.Add(polyline);
+        }
+
+
 
 
 
@@ -410,14 +466,12 @@ namespace ProcesamientoDeImágenes
             byte[] pixels = new byte[height * stride];
             bitmap.CopyPixels(pixels, stride, 0);
 
-            // Gaussian Kernel for 3x3 blur
             double[,] kernel = {
                  { 1, 2, 1 },
                  { 2, 4, 2 },
                  { 1, 2, 1 }
              };
 
-            // int kernelSize = 3;
             double kernelSum = 16.0; 
 
             byte[] blurredPixels = new byte[pixels.Length];
@@ -459,7 +513,7 @@ namespace ProcesamientoDeImágenes
         {
             int width = bitmap.PixelWidth;
             int height = bitmap.PixelHeight;
-            int stride = width * 4; // 4 bytes per pixel (BGRA)
+            int stride = width * 4;
 
             byte[] pixelData = new byte[height * stride];
             bitmap.CopyPixels(pixelData, stride, 0);
@@ -470,7 +524,7 @@ namespace ProcesamientoDeImágenes
                 {
                     int redSum = 0, greenSum = 0, blueSum = 0, count = 0;
 
-                    // Calculate average color in block
+                    
                     for (int j = 0; j < blockSize && (y + j) < height; j++)
                     {
                         for (int i = 0; i < blockSize && (x + i) < width; i++)
@@ -516,16 +570,16 @@ namespace ProcesamientoDeImágenes
         {
             int width = bitmap.PixelWidth;
             int height = bitmap.PixelHeight;
-            int stride = width * 4; // 4 bytes per pixel (BGRA)
+            int stride = width * 4; 
 
             byte[] pixelData = new byte[height * stride];
             bitmap.CopyPixels(pixelData, stride, 0);
 
-            // Calculate contrast adjustment factor
+            
             double contrast = (100.0 + contrastFactor) / 100.0;
             contrast *= contrast;
 
-            for (int i = 0; i < pixelData.Length; i += 4) // Iterate through each pixel (BGRA)
+            for (int i = 0; i < pixelData.Length; i += 4) 
             {
                 for (int j = 0; j < 3; j++) // Modify only R, G, and B channels
                 {
@@ -540,7 +594,6 @@ namespace ProcesamientoDeImágenes
                 }
             }
 
-            // Create a new image with the modified pixels
             WriteableBitmap contrastBitmap = new WriteableBitmap(width, height, bitmap.DpiX, bitmap.DpiY, bitmap.Format, bitmap.Palette);
             contrastBitmap.WritePixels(new Int32Rect(0, 0, width, height), pixelData, stride, 0);
 

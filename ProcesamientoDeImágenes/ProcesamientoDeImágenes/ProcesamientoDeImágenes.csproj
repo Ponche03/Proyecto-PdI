@@ -260,7 +260,9 @@
     <Resource Include="Assets\Icons\stop_icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\haarcascade\haarcascade_frontalface_default.xml" />
+    <Content Include="Assets\haarcascade\haarcascade_frontalface_default.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">

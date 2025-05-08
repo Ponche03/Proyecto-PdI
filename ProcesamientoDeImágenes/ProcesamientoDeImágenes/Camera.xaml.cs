@@ -63,10 +63,9 @@ namespace ProcesamientoDeImágenes
         }
         private void LoadFaceCascade()
         {
-           
-            string cascadePath = "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeImágenes\\ProcesamientoDeImágenes\\Assets\\haarcascade\\haarcascade_frontalface_default.xml"; 
 
-            // Cargar el clasificador Haar para detección de caras
+            string cascadePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "haarcascade", "haarcascade_frontalface_default.xml");
+
             faceCascade = new CascadeClassifier(cascadePath);
         }
         private void CameraComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -524,15 +523,17 @@ namespace ProcesamientoDeImágenes
         {
             Mat gray = new Mat();
             Mat binary = new Mat();
+            Mat binaryBgr = new Mat();
 
-            // Convert input to grayscale first
             Cv2.CvtColor(input, gray, ColorConversionCodes.BGR2GRAY);
-
-            // Apply threshold
+            
             Cv2.Threshold(gray, binary, threshold, 255, ThresholdTypes.Binary);
 
-            return binary;
+            Cv2.CvtColor(binary, binaryBgr, ColorConversionCodes.GRAY2BGR);
+
+            return binaryBgr;
         }
+
         private Mat ApplyHueSaturationFilterOpenCV(Mat input, double hueShiftDegrees, double saturationFactor)
         {
             Mat hsv = new Mat();

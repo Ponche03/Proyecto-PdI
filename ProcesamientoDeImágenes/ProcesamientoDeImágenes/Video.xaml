@@ -229,34 +229,39 @@
             </Grid.ColumnDefinitions>
 
             <!-- Selected Video Container -->
-            <Border Grid.Column="2" Grid.ColumnSpan="27" Grid.RowSpan="17" Grid.Row="2" BorderBrush="Black" BorderThickness="2">
+            <Border Grid.Column="2" Grid.ColumnSpan="27" Grid.RowSpan="17" Grid.Row="2" BorderBrush="Black" BorderThickness="2" CornerRadius="10">
                 <MediaElement x:Name="VideoPlayer" LoadedBehavior="Manual" UnloadedBehavior="Stop" Stretch="Uniform" />
             </Border>
 
-            <Border Grid.Column="2" Grid.ColumnSpan="27" Grid.RowSpan="17" Grid.Row="2" BorderBrush="Black" BorderThickness="2">
+            <Border Grid.Column="2" Grid.ColumnSpan="27" Grid.RowSpan="17" Grid.Row="2" BorderBrush="Black" BorderThickness="2" CornerRadius="10">
                 <Image x:Name="FilteredImage" Stretch="Uniform" >
                 </Image>
             </Border>
 
 
-            <!-- Upload Video Icon -->
+           
             <Button Click="OnUploadVideoIconClick" Grid.Column="3" Grid.Row="20" Background="Transparent" BorderThickness="0">
                 <Image Source="/Assets/Icons/UploadImageIcon.png" Stretch="Fill"/>
             </Button>
 
-            <!-- Download Video Icon -->
+            <!-- Download Video Icon --><!--
             <Button Click="OnDownloadVideoIconClick" Grid.Column="27" Grid.Row="20" Background="Transparent" BorderThickness="0">
                 <Image Source="/Assets/Icons/DownloadImageIcon.png" Stretch="Fill"/>
-            </Button>
+            </Button>-->
 
             <!-- Pause Video Icon -->
-            <Button Click="PauseVideo" Grid.Column="14" Grid.Row="20" Background="Transparent" BorderThickness="0">
+            <Button Click="PauseVideo" Grid.Column="13" Grid.Row="20" Background="Transparent" BorderThickness="0">
                 <Image Source="/Assets/Icons/pause_icon.png" Stretch="Fill"/>
             </Button>
 
             <!-- Play Video Icon -->
-            <Button Click="PlayVideo" Grid.Column="16" Grid.Row="20" Background="Transparent" BorderThickness="0">
+            <Button Click="PlayVideo" Grid.Column="17" Grid.Row="20" Background="Transparent" BorderThickness="0">
                 <Image Source="/Assets/Icons/play_icon.png" Stretch="Fill"/>
+            </Button>
+
+            <!-- Stop Video Icon -->
+            <Button Click="StopVideo" Grid.Column="15" Grid.Row="20" Background="Transparent" BorderThickness="0" x:Name="stopbutton">
+                <Image Source="/Assets/Icons/stop_icon.png" Stretch="Fill"/>
             </Button>
 
 
