@@ -26,6 +26,10 @@ namespace ProcesamientoDeImágenes
         private VideoCapture capture;
         private CancellationTokenSource cts;
 
+
+        private string videoFilePath = "";
+
+
         private string selectedFilter = "None";
         private bool isPaused = false;
 
@@ -55,7 +59,7 @@ namespace ProcesamientoDeImágenes
                     MessageBox.Show("Unable to open video.");
                     return;
                 }
-
+                videoFilePath = dialog.FileName;
                 cts = new CancellationTokenSource();
                 await Task.Run(() => PlayVideoAsync(cts.Token));
             }
@@ -214,6 +218,61 @@ namespace ProcesamientoDeImágenes
             HistogramBlueCanvas.Children.Clear();
         }
 
+        private async void FilteredImage_RightClick(object sender, MouseButtonEventArgs e)
+        {
+            if (capture == null || !capture.IsOpened())
+            {
+                MessageBox.Show("No hay video cargado.");
+                return;
+            }
+
+            Microsoft.Win32.SaveFileDialog saveDialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = "Video files (*.avi)|*.avi",
+                FileName = "filtered_output.avi"
+            };
+
+            if (saveDialog.ShowDialog() == true)
+            {
+                string outputPath = saveDialog.FileName;
+                await SaveFilteredVideoAsync(outputPath);
+                MessageBox.Show("Video guardado con éxito.");
+            }
+        }
+
+        private async Task SaveFilteredVideoAsync(string outputPath)
+        {
+            using (var tempCapture = new VideoCapture(videoFilePath))
+            {
+                if (!tempCapture.IsOpened())
+                {
+                    MessageBox.Show("No se pudo abrir el video para exportar.");
+                    return;
+                }
+
+                int fourcc = VideoWriter.FourCC('M', 'J', 'P', 'G'); 
+                double fps = tempCapture.Fps;
+                int width = tempCapture.FrameWidth;
+                int height = tempCapture.FrameHeight;
+
+                using (var writer = new VideoWriter(outputPath, fourcc, fps, new OpenCvSharp.Size(width, height)))
+                {
+                    var frame = new Mat();
+                    while (tempCapture.Read(frame))
+                    {
+                        if (frame.Empty()) break;
+
+                        Mat filtered = ApplySelectedFilter(frame);
+                        writer.Write(filtered);
+
+                        filtered.Dispose();
+                        await Task.Delay(1); 
+                    }
+
+                    frame.Dispose();
+                }
+            }
+        }
 
 
         private void OnFilterButtonClick(object sender, RoutedEventArgs e)

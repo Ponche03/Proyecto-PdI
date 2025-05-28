@@ -102,3 +102,7 @@ C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\Procesam
 C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\bin\Debug\Assets\haarcascade\haarcascade_frontalface_default.xml
 C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\PixelInfoWindow.g.cs
 C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\PixelInfoWindow.baml
+C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\bin\Debug\ProcesamientoDeImágenes.exe.manifest
+C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\bin\Debug\ProcesamientoDeImágenes.application
+C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\ProcesamientoDeImágenes.exe.manifest
+C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\ProcesamientoDeImágenes.application
