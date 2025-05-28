@@ -20,6 +20,7 @@ using AForge.Video;
 using AForge.Video.DirectShow;
 using OpenCvSharp;
 using System.IO;
+using System.Windows.Media.Animation;
 
 
 
@@ -130,30 +131,84 @@ namespace ProcesamientoDeImágenes
             }
         }
 
+        public static BitmapSource ConvertBitmapToBitmapSource(System.Drawing.Bitmap bitmap)
+        {
+            using (MemoryStream memory = new MemoryStream())
+            {
+                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
+                memory.Position = 0;
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                return bitmapImage;
+            }
+        }
+
         private void CameraDisplay_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (lastDisplayedBitmap == null) return;
+
+            BitmapSource bitmapSource = ConvertBitmapToBitmapSource(lastDisplayedBitmap);
+
 
             // Get click position relative to the image
             var position = e.GetPosition(CameraDisplay);
 
             // Scale position to bitmap size
-            double xScale = lastDisplayedBitmap.Width / CameraDisplay.ActualWidth;
-            double yScale = lastDisplayedBitmap.Height / CameraDisplay.ActualHeight;
+            double xScale = bitmapSource.PixelWidth / CameraDisplay.ActualWidth;
+            double yScale = bitmapSource.PixelHeight / CameraDisplay.ActualHeight;
 
             int x = (int)(position.X * xScale);
             int y = (int)(position.Y * yScale);
 
             // Bounds check
-            if (x >= 0 && x < lastDisplayedBitmap.Width && y >= 0 && y < lastDisplayedBitmap.Height)
+            if (x >= 0 && x < bitmapSource.PixelWidth && y >= 0 && y < bitmapSource.PixelHeight)
             {
-                var color = lastDisplayedBitmap.GetPixel(x, y);
+                // Obtener color RGB para mostrar en texto y fondo
+                var color = lastDisplayedBitmap.GetPixel(x, y); // Este método debe existir o puedes usar CopyPixels
                 string hex = $"#{color.R:X2}{color.G:X2}{color.B:X2}";
                 HexColorTextBox.Text = hex;
                 HexColorTextBox.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(color.R, color.G, color.B));
 
+                try
+                {
+                    // Extraer píxel (asumimos formato Bgra32)
+                    byte[] pixelData = new byte[4]; // BGRA
+                    Int32Rect rect = new Int32Rect(x, y, 1, 1);
+                    bitmapSource.CopyPixels(rect, pixelData, 4, 0);
+
+                    byte b = pixelData[0];
+                    byte g = pixelData[1];
+                    byte r = pixelData[2];
+                    // byte a = pixelData[3]; // Alfa si lo necesitas
+
+                    // Crear Mat de OpenCV
+                    using (Mat bgrPixelMat = new Mat(1, 1, MatType.CV_8UC3, new Scalar(b, g, r)))
+                    using (Mat labPixelMat = new Mat())
+                    {
+                        Cv2.CvtColor(bgrPixelMat, labPixelMat, ColorConversionCodes.BGR2Lab);
+                        Vec3b labColor = labPixelMat.Get<Vec3b>(0, 0);
+
+                        byte l = labColor.Item0;
+                        byte a = labColor.Item1;
+                        byte labB = labColor.Item2;
+
+                        // Mostrar ventana con valores LAB
+                        PixelInfoWindow labInfoWindow = new PixelInfoWindow(x, y, l, a, labB);
+                        labInfoWindow.Owner = this;
+                        labInfoWindow.Show();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error obteniendo color LAB: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
+
+
 
 
         private BitmapSource ConvertToBitmapSource(System.Drawing.Bitmap bitmap)
@@ -362,6 +417,7 @@ namespace ProcesamientoDeImágenes
 
             isFlipped = !isFlipped;
         }
+
 
 
         private void OnScreenShotIconClick(object sender, RoutedEventArgs e)

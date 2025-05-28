@@ -3,28 +3,48 @@
   "WorkspaceRootPath": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|c:\\users\\rober\\onedrive\\documents\\proyecto-pdi\\procesamientodeim\u00E1genes\\procesamientodeim\u00E1genes\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|solutionrelative:procesamientodeim\u00E1genes\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|c:\\users\\rober\\onedrive\\documents\\proyecto-pdi\\procesamientodeim\u00E1genes\\procesamientodeim\u00E1genes\\pixelinfowindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|solutionrelative:procesamientodeim\u00E1genes\\pixelinfowindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|c:\\users\\rober\\onedrive\\documents\\proyecto-pdi\\procesamientodeim\u00E1genes\\procesamientodeim\u00E1genes\\camera.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|c:\\users\\rober\\onedrive\\documents\\proyecto-pdi\\procesamientodeim\u00E1genes\\procesamientodeim\u00E1genes\\pixelinfowindow.xaml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|solutionrelative:procesamientodeim\u00E1genes\\pixelinfowindow.xaml||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\procesamientodeim\u00E1genes\\camera.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|solutionrelative:procesamientodeim\u00E1genes\\camera.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|c:\\users\\rober\\onedrive\\documents\\proyecto-pdi\\procesamientodeim\u00E1genes\\procesamientodeim\u00E1genes\\imagewindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|solutionrelative:procesamientodeim\u00E1genes\\imagewindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|c:\\users\\rober\\onedrive\\documents\\proyecto-pdi\\procesamientodeim\u00E1genes\\procesamientodeim\u00E1genes\\imagewindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|solutionrelative:procesamientodeim\u00E1genes\\imagewindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\procesamientodeim\u00E1genes\\camera.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|solutionrelative:procesamientodeim\u00E1genes\\camera.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|c:\\users\\rober\\onedrive\\documents\\proyecto-pdi\\procesamientodeim\u00E1genes\\procesamientodeim\u00E1genes\\pixelinfowindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|solutionrelative:procesamientodeim\u00E1genes\\pixelinfowindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\procesamientodeim\u00E1genes\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|solutionrelative:procesamientodeim\u00E1genes\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|c:\\users\\rober\\onedrive\\documents\\proyecto-pdi\\procesamientodeim\u00E1genes\\procesamientodeim\u00E1genes\\video.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|solutionrelative:procesamientodeim\u00E1genes\\video.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|c:\\users\\rober\\onedrive\\documents\\proyecto-pdi\\procesamientodeim\u00E1genes\\procesamientodeim\u00E1genes\\video.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\procesamientodeim\u00E1genes\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|solutionrelative:procesamientodeim\u00E1genes\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\procesamientodeim\u00E1genes\\video.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|solutionrelative:procesamientodeim\u00E1genes\\video.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|c:\\users\\rober\\onedrive\\documents\\proyecto-pdi\\procesamientodeim\u00E1genes\\procesamientodeim\u00E1genes\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|solutionrelative:procesamientodeim\u00E1genes\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|c:\\users\\rober\\onedrive\\documents\\proyecto-pdi\\procesamientodeim\u00E1genes\\procesamientodeim\u00E1genes\\camera.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{80BA1823-2C1C-4B4F-AFA8-0379B308BB13}|ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes.csproj|solutionrelative:procesamientodeim\u00E1genes\\camera.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,11 +54,48 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 0,
+              "Title": "PixelInfoWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\PixelInfoWindow.xaml",
+              "RelativeDocumentMoniker": "ProcesamientoDeIm\u00E1genes\\PixelInfoWindow.xaml",
+              "ToolTip": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\PixelInfoWindow.xaml",
+              "RelativeToolTip": "ProcesamientoDeIm\u00E1genes\\PixelInfoWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-05-28T03:48:21.999Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ImageWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\ImageWindow.xaml",
+              "RelativeDocumentMoniker": "ProcesamientoDeIm\u00E1genes\\ImageWindow.xaml",
+              "ToolTip": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\ImageWindow.xaml",
+              "RelativeToolTip": "ProcesamientoDeIm\u00E1genes\\ImageWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-05-28T03:31:08.711Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ImageWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\ImageWindow.xaml.cs",
+              "RelativeDocumentMoniker": "ProcesamientoDeIm\u00E1genes\\ImageWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\ImageWindow.xaml.cs",
+              "RelativeToolTip": "ProcesamientoDeIm\u00E1genes\\ImageWindow.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-28T03:31:04.393Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "Camera.xaml",
               "DocumentMoniker": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\Camera.xaml",
               "RelativeDocumentMoniker": "ProcesamientoDeIm\u00E1genes\\Camera.xaml",
@@ -50,20 +107,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "Camera.xaml.cs",
               "DocumentMoniker": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\Camera.xaml.cs",
               "RelativeDocumentMoniker": "ProcesamientoDeIm\u00E1genes\\Camera.xaml.cs",
               "ToolTip": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\Camera.xaml.cs",
               "RelativeToolTip": "ProcesamientoDeIm\u00E1genes\\Camera.xaml.cs",
-              "ViewState": "AgIAAJEBAAAAAAAAAAA0wA8CAABFAAAAAAAAAA==",
+              "ViewState": "AgIAABUBAAAAAAAAAAAswKUBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-07T06:36:43.319Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
+              "Title": "PixelInfoWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\PixelInfoWindow.xaml.cs",
+              "RelativeDocumentMoniker": "ProcesamientoDeIm\u00E1genes\\PixelInfoWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\PixelInfoWindow.xaml.cs",
+              "RelativeToolTip": "ProcesamientoDeIm\u00E1genes\\PixelInfoWindow.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAABLAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-28T03:49:14.291Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "Video.xaml",
               "DocumentMoniker": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\Video.xaml",
               "RelativeDocumentMoniker": "ProcesamientoDeIm\u00E1genes\\Video.xaml",
@@ -75,33 +145,32 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 8,
               "Title": "Video.xaml.cs",
               "DocumentMoniker": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\Video.xaml.cs",
               "RelativeDocumentMoniker": "ProcesamientoDeIm\u00E1genes\\Video.xaml.cs",
               "ToolTip": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\Video.xaml.cs",
               "RelativeToolTip": "ProcesamientoDeIm\u00E1genes\\Video.xaml.cs",
-              "ViewState": "AgIAANgAAAAAAAAAAAAAwOgAAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAAHsAAAAAAAAAAAD4v3AAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-07T06:05:08.112Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 9,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "ProcesamientoDeIm\u00E1genes\\MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\MainWindow.xaml.cs*",
-              "RelativeToolTip": "ProcesamientoDeIm\u00E1genes\\MainWindow.xaml.cs*",
-              "ViewState": "AgIAAGIDAAAAAAAAAAAowEYDAAAHAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\MainWindow.xaml.cs",
+              "RelativeToolTip": "ProcesamientoDeIm\u00E1genes\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAGgDAAAAAAAAAAAowJwDAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-07T06:04:35.682Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-07T06:04:35.682Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\MainWindow.xaml",
               "RelativeDocumentMoniker": "ProcesamientoDeIm\u00E1genes\\MainWindow.xaml",
@@ -109,6 +178,40 @@
               "RelativeToolTip": "ProcesamientoDeIm\u00E1genes\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2025-05-06T02:20:13.615Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "FloatingWindowState": {
+        "Id": "6585e9dd-6035-4293-aae3-943a8117c9f0",
+        "Display": 0,
+        "X": 20,
+        "Y": 85,
+        "Width": 800,
+        "Height": 600,
+        "WindowState": 0
+      },
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PixelInfoWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\PixelInfoWindow.xaml",
+              "RelativeDocumentMoniker": "ProcesamientoDeIm\u00E1genes\\PixelInfoWindow.xaml",
+              "ToolTip": "C:\\Users\\rober\\OneDrive\\Documents\\Proyecto-PdI\\ProcesamientoDeIm\u00E1genes\\ProcesamientoDeIm\u00E1genes\\PixelInfoWindow.xaml",
+              "RelativeToolTip": "ProcesamientoDeIm\u00E1genes\\PixelInfoWindow.xaml",
+              "ViewState": "AgIAADsAAAAAAAAAAAAuwEgAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-05-28T04:01:24.77Z",
               "EditorCaption": ""
             }
           ]

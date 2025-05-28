@@ -173,6 +173,9 @@
     <Compile Include="ImageWindow.xaml.cs">
       <DependentUpon>ImageWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PixelInfoWindow.xaml.cs">
+      <DependentUpon>PixelInfoWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Video.xaml.cs">
       <DependentUpon>Video.xaml</DependentUpon>
     </Compile>
@@ -196,6 +199,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PixelInfoWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Video.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

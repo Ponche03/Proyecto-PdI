@@ -100,3 +100,5 @@ C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\Procesam
 C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\bin\Debug\Assets\haarcascade\haarcascade_frontalface_default.xml
+C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\PixelInfoWindow.g.cs
+C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\PixelInfoWindow.baml
