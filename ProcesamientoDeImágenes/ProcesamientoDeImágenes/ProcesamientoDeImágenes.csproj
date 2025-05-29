@@ -58,7 +58,7 @@
     <ApplicationIcon>Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>68F693609F6CF59E8C5D8A0A1A56833CBF66B4F6</ManifestCertificateThumbprint>
@@ -186,6 +186,9 @@
     <Compile Include="ImageWindow.xaml.cs">
       <DependentUpon>ImageWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OriginalVideoWindow.xaml.cs">
+      <DependentUpon>OriginalVideoWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PixelInfoWindow.xaml.cs">
       <DependentUpon>PixelInfoWindow.xaml</DependentUpon>
     </Compile>
@@ -212,6 +215,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="OriginalVideoWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PixelInfoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

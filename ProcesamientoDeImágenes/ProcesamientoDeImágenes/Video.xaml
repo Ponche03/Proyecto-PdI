@@ -234,7 +234,7 @@
             </Border>
 
             <Border Grid.Column="2" Grid.ColumnSpan="27" Grid.RowSpan="17" Grid.Row="2" BorderBrush="Black" BorderThickness="2" CornerRadius="10">
-                <Image x:Name="FilteredImage" Stretch="Uniform" MouseRightButtonDown="FilteredImage_RightClick">
+                <Image x:Name="FilteredImage" Stretch="Uniform" MouseRightButtonDown="FilteredImage_RightClick"  MouseLeftButtonDown="FilteredImage_MouseDoubleClick">
                 </Image>
             </Border>
 

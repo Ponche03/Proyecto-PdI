@@ -338,7 +338,6 @@ namespace ProcesamientoDeImágenes
 
                 if (UploadedImage != null)
                 {
-
                     if (UploadedImage.Source == null)
                     {
                         MessageBox.Show("Please upload an image first!", "", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -356,55 +355,78 @@ namespace ProcesamientoDeImágenes
                             UploadedImage.Source = originalImage;
                             UpdateHistogram(new WriteableBitmap(originalImage));
                             break;
+
                         case "Gaussian Blur":
-                            UploadedImage.Source = ApplyGaussianBlur(writableBitmap, 10);
-                            UpdateHistogram(writableBitmap);
+                            var gaussianResult = ApplyGaussianBlur(writableBitmap, 10);
+                            UploadedImage.Source = gaussianResult;
+                            UpdateHistogram(new WriteableBitmap((BitmapSource)gaussianResult));
                             break;
+
                         case "Contrast Filter":
-                            UploadedImage.Source = ApplyContrastFilter(writableBitmap, 50);
-                            UpdateHistogram(writableBitmap);
+                            var contrastResult = ApplyContrastFilter(writableBitmap, 50);
+                            UploadedImage.Source = contrastResult;
+                            UpdateHistogram(new WriteableBitmap((BitmapSource)contrastResult));
                             break;
+
                         case "Sharpness Filter":
-                            UploadedImage.Source = ApplySharpnessFilter(writableBitmap);
-                            UpdateHistogram(writableBitmap);
+                            var sharpnessResult = ApplySharpnessFilter(writableBitmap);
+                            UploadedImage.Source = sharpnessResult;
+                            UpdateHistogram(new WriteableBitmap((BitmapSource)sharpnessResult));
                             break;
+
                         case "Threshold Filter":
-                            UploadedImage.Source = ApplyThresholdFilter(writableBitmap, 128);
-                            UpdateHistogram(writableBitmap);
+                            var thresholdResult = ApplyThresholdFilter(writableBitmap, 128);
+                            UploadedImage.Source = thresholdResult;
+                            UpdateHistogram(new WriteableBitmap((BitmapSource)thresholdResult));
                             break;
+
                         case "Hue/Saturation Filter":
                             double hueShift = 30.0;
                             double saturationFactor = 1.5;
-                            UploadedImage.Source = ApplyHueSaturationFilter(writableBitmap, hueShift, saturationFactor);
-                            UpdateHistogram(writableBitmap);
+                            var hueSaturationResult = ApplyHueSaturationFilter(writableBitmap, hueShift, saturationFactor);
+                            UploadedImage.Source = hueSaturationResult;
+                            UpdateHistogram(new WriteableBitmap((BitmapSource)hueSaturationResult));
                             break;
+
                         case "Negative Filter":
-                            UploadedImage.Source = ApplyNegativeFilter(writableBitmap);
-                            UpdateHistogram(writableBitmap);
+                            var negativeResult = ApplyNegativeFilter(writableBitmap);
+                            UploadedImage.Source = negativeResult;
+                            UpdateHistogram(new WriteableBitmap((BitmapSource)negativeResult));
                             break;
+
                         case "Vignette Filter":
-                            UploadedImage.Source = ApplyVignetteFilter(writableBitmap);
-                            UpdateHistogram(writableBitmap);
+                            var vignetteResult = ApplyVignetteFilter(writableBitmap);
+                            UploadedImage.Source = vignetteResult;
+                            UpdateHistogram(new WriteableBitmap((BitmapSource)vignetteResult));
                             break;
+
                         case "Mosaic Filter":
-                            UploadedImage.Source = ApplyMosaicFilter(writableBitmap, 10);
-                            UpdateHistogram(writableBitmap);
+                            var mosaicResult = ApplyMosaicFilter(writableBitmap, 10);
+                            UploadedImage.Source = mosaicResult;
+                            UpdateHistogram(new WriteableBitmap((BitmapSource)mosaicResult));
                             break;
+
                         case "Retro Effect":
-                            UploadedImage.Source = ApplyRetroEffect(writableBitmap);
-                            UpdateHistogram(writableBitmap);
+                            var retroResult = ApplyRetroEffect(writableBitmap);
+                            UploadedImage.Source = retroResult;
+                            UpdateHistogram(new WriteableBitmap((BitmapSource)retroResult));
                             break;
+
                         case "Warp Filter":
-                            UploadedImage.Source = ApplyWarpEffect(writableBitmap, 0.5);
-                            UpdateHistogram(writableBitmap);
+                            var warpResult = ApplyWarpEffect(writableBitmap, 0.5);
+                            UploadedImage.Source = warpResult;
+                            UpdateHistogram(new WriteableBitmap((BitmapSource)warpResult));
                             break;
+
                         default:
                             MessageBox.Show("Unknown filter selected.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                             break;
                     }
+
                 }
             }
         }
+
 
 
 
@@ -428,7 +450,6 @@ namespace ProcesamientoDeImágenes
             DrawChannelPolyline(canvas, greenHist, Brushes.Green, maxValue, binWidth, maxHeight);
             DrawChannelPolyline(canvas, blueHist, Brushes.Blue, maxValue, binWidth, maxHeight);
         }
-
         private void DrawChannelPolyline(Canvas canvas, int[] histogram, Brush brush, int maxValue, double binWidth, double maxHeight)
         {
             Polyline polyline = new Polyline

@@ -111,6 +111,22 @@ namespace ProcesamientoDeImágenes
         }
 
 
+        private void FilteredImage_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                if (!string.IsNullOrEmpty(videoFilePath))
+                {
+                    OriginalVideoWindow originalWindow = new OriginalVideoWindow(videoFilePath);
+                    originalWindow.Show();
+                }
+                else
+                {
+                    MessageBox.Show("No hay video cargado.");
+                }
+            }
+        }
+
 
         private void DrawHistograms(Mat frame)
         {
