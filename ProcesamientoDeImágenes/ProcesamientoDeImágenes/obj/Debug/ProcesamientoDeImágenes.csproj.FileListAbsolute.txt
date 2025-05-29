@@ -197,3 +197,5 @@ C:\Users\roberto.ponce\Downloads\Proyecto-PdI\ProcesamientoDeImágenes\Procesami
 C:\Users\roberto.ponce\Downloads\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\Procesam.EDAFF198.Up2Date
 C:\Users\roberto.ponce\Downloads\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\OriginalVideoWindow.g.cs
 C:\Users\roberto.ponce\Downloads\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\OriginalVideoWindow.baml
+C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\OriginalVideoWindow.g.cs
+C:\Users\rober\OneDrive\Documents\Proyecto-PdI\ProcesamientoDeImágenes\ProcesamientoDeImágenes\obj\Debug\OriginalVideoWindow.baml
